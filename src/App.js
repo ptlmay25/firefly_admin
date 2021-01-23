@@ -1,23 +1,24 @@
-import logo from './logo.svg';
+import { Route, Redirect, Switch } from 'react-router-dom'
+
 import './App.css';
+import Auth from './containers/Auth/Auth';
+import Dashboard from './containers/Dashboard/Dashboard'
+import UserDetails from './containers/UserDetails/UserDetails';
+import UserList from './containers/UserList/UserList';
 
 function App() {
+  const routes = (
+    <Switch>
+      <Route path="/auth" exact component={ Auth } />
+      <Route path="/users" exact component={ UserList } />
+      <Route path="/users/:uid" component={ UserDetails } />
+      <Route path="/" component={ Dashboard } />
+      <Redirect to="/" />
+    </Switch>
+  )
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React with fun
-        </a>
-      </header>
+    <div>
+      { routes }
     </div>
   );
 }

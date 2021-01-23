@@ -1,0 +1,14 @@
+.BoxContainer {
+    display: flex;
+    justify-content: left;
+    padding: 30px 80px;
+}
+
+.DetailsContainer {
+    padding: 10px 120px;
+}
+
+.Info {
+    max-width: 500px;
+    padding-left: 15px;
+}

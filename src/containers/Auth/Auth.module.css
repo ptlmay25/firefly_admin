@@ -1,0 +1,36 @@
+.Auth{
+    /* background-color:  #EDEDED; */
+    background-size: cover;
+}
+
+.Image {
+    margin-top: 140px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.InputContainer {
+    margin-top: 30px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.Input {
+    max-width: 320px !important;
+    min-width: 320px;
+}
+
+.OTP {
+    margin-top: 20px;
+    width: 200px;
+    border-radius: 50px;
+    background-color: #424770;
+}
+
+.ant-btn-primary {
+    background-color: #424770 !important;
+    border-color: #424770 !important;
+}
