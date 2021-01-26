@@ -1,0 +1,13 @@
+.InfoContainer{
+    margin-top: 50px;
+    padding: 20px 90px;
+    font-size: 16px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.Button {
+    margin-left: 30px;
+    margin-top: -5px;
+    min-width: 150px;
+}

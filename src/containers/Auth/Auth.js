@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { Input, Button, Space } from 'antd'
-
 import { Container } from 'react-bootstrap'
 
 import AdminImage from '../../assets/admin.png'
 import classes from './Auth.module.css'
 
 const Auth = () => {
-    const [otp, isOtpEntered] = useState(false)
+    const [isOtpEntered, setIsOtpEntered] = useState(false)
 
     return (
         <div className={ classes.Auth }>
@@ -15,7 +14,7 @@ const Auth = () => {
             <Container className={ classes.InputContainer }>
                 <Input maxLength="10" minLength="10" placeholder="Phone No." className={ classes.Input }/>
                 {
-                    otp ?
+                    isOtpEntered ?
                     <React.Fragment>
                         <Space direction="vertical" className={ classes.Input }>
                             <Input.Password placeholder="Enter OTP" style={{ marginTop: '20px' }}/>
@@ -29,12 +28,12 @@ const Auth = () => {
                                 Login
                         </Button>
                     </React.Fragment>   :
-                     <Button 
+                    <Button 
                         size="large" 
                         shape="round" 
                         type="primary" 
                         className={ classes.OTP } 
-                        onClick={ () => isOtpEntered(true)}>
+                        onClick={() => setIsOtpEntered(true)}>
                             Send OTP
                     </Button>
                 }
