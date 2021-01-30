@@ -11,9 +11,16 @@
     font-size: 16px;
 }
 
-.Search {
-    max-width: 250px;
+.Header { 
+    display: flex;
+    justify-content: space-between
 }
+
+.Search {
+    max-width: 300px;
+    margin-top: -40px;
+}
+
 
 .TableContainer {
     margin-top: 40px;

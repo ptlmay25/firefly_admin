@@ -23,7 +23,7 @@
     height: 180px;
     margin-top: 20px;
     margin-right: 80px;
-    background-color: lightsalmon;
+    border: 1px solid black;
 }
 
 .TableContainer {

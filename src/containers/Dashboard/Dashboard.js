@@ -26,12 +26,12 @@ const Dashboard = () => {
                     <hr></hr>
                     <div style={{ padding: '10px 20px' }}>
                         <Row>
-                            <Card title="Token Price + Dividend" color="#06C167" cash_amount="2500" amount="" link="token-price"/>
-                            <Card title="Total Token Purchased" color="#CC20F6" cash_amount="65000" amount="5000000" />
+                            <Card title="Token Price + Dividend" color="#06C167" cash_amount="250000" amount="2500" link="token-price"/>
+                            <Card title="Total Token Purchased" color="#CC20F6" cash_amount="65000" amount="5000000" link="purchase-history"/>
                         </Row>
 
                         <Row>
-                            <Card title="Total Token sold" color="#E3CF1A" cash_amount="65000" amount="25000" />
+                            <Card title="Total Token sold" color="#E3CF1A" cash_amount="65000" amount="25000" link="selling-history" />
                             <Card title="Withdraw Request" color="#F94A4A" cash_amount="65000" amount="80/100" link="withdraw-request" />
                         </Row>
 

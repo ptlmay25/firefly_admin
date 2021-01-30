@@ -15,7 +15,7 @@ const HotelList = (props) => {
                     variant="success" 
                     className={ classes.Button }
                     onClick={() => props.history.push('./hotels/add')}>
-                        Add
+                       + Add
                 </Button>
             </div>
             <Container className={ classes.ListContainer } fluid style={{ padding: '20px 100px' }}>

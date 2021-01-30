@@ -1,20 +1,82 @@
-import { Input, Radio } from 'antd'
 import React, { useState } from 'react'
 import { Table } from 'react-bootstrap'
+
 import NavigationBar from '../../components/Navigation/NavigationBar'
 import Box from '../../components/UserDetails/Box/Box'
-import CustomTable from '../../components/UserDetails/CustomTable/CustomTable'
 import UserDetail from '../../components/UserDetails/UserDetail/UserDetail'
 import classes from './UserDetails.module.css'
+import columns from '../../resources/TableColumns'
+import TabPanel from '../../components/UserDetails/TabPanel/TabPanel'
+import Heading from '../../components/UserDetails/Heading'
+import RadioGroup from '../../components/UserDetails/RadioGroup/RadioGroup'
+import { useEffect } from 'react'
+import { useHttpClient } from '../../resources/http-hook'
 
-const UserDetails = () => {
-    const withdrawHistoryTableHeaders = ['Date','Bank Account Number','UPI','ISFC Code','Total Amount', 'Status']
-    const purchaseHistoryTableHeaders = ['Date','Purchase ID','Number of Token','Purchase Price','Total Amount', 'Status']
-    const sellingHistoryTableHeaders = ['Date','Sellling ID','Number of Token','Sell Price','Total Amount', 'Status']
-    const dividendHistoryTableHeaders = ['Date','Number of Token','Total Value','Dividend Per Token','Total Amount']
-    const { Search } = Input
+const UserDetails = (props) => {
+    const withdrawData = null
+    const purchaseData = null 
+    const sellingData = null   
+    const dividendData = null
+
+    const [ data, setData ] = useState(null)
+    const { sendRequest } = useHttpClient()
+
+    useEffect(() => {
+        const id = props.location.state    
+        const fetchUserData = () => {
+            sendRequest(`/user/view/${id}`).then((response) => {
+                setData(response.data)
+            })
+        }
+        fetchUserData()    
+    }, [sendRequest, props])
+
+    let personalDetails = []
+    let financialDetails = []
+    if(data) {
+        personalDetails = [
+            { field: 'User ID', value: data[0]._id },
+            { field: 'First Name', value: data[0].firstName },
+            { field: 'Last Name', value: data[0].lastName },
+            { field: 'Gender', value: data[0].gender },
+            { field: 'Date of Birth', value: data[0].DOB },
+            { field: 'Phone Number', value: data[0].mobileNo },
+            { field: 'Aadhar/Pan Card Number', value: data[0].aadharCardNo },
+            { field: 'Email Address', value: data[0].emailAddress },
+            { field: 'Home Address', value: data[0].homeAddress },
+            { field: 'City', value: data[0].city },
+            { field: 'State', value: data[0].state },
+            { field: 'Zip Code', value: data[0].zipcode  },
+            { field: 'Country', value: data[0].country },
+            { field: 'Join Date', value: data[0].createdAt },
+        ]
+        financialDetails  = [
+            { field: 'UPI', value: data[0].UPI },
+            { field: 'Bank Account Number', value: data[0].bankAccountNo },
+            { field: 'IFSC Code', value: data[0].IFSC },
+        ]
+    }
+
     const [ selectedTable, setSelectedTable ] = useState('withdraw')
+
+    const [ dataSourceWithdraw, setDataSourceWithdraw ] = useState(withdrawData);
+    const [ dataSourcePurchase, setDataSourcePurchase ] = useState(purchaseData);
+    const [ dataSourceSelling, setDataSourceSelling ] = useState(sellingData);
+    const [ dataSourceDividend, setDataSourceDividend ] = useState(dividendData);
     
+    const onSearchWithdraw = e => {
+        setDataSourceWithdraw(withdrawData.filter( entry =>  entry.amount.includes(e.target.value) ))
+    }
+    const onSearchPurchase = e => {
+        setDataSourcePurchase(purchaseData.filter( entry =>  entry.purchase_id.includes(e.target.value) ))
+    }
+    const onSearchSelling = e => {
+        setDataSourceSelling(sellingData.filter( entry =>  entry.selling_id.includes(e.target.value) ))
+    }
+    const onSearchDividend = e => {
+        setDataSourceDividend(dividendData.filter( entry =>  entry.date.includes(e.target.value) ))
+    }
+
     return (
         <div>
             <NavigationBar />
@@ -24,46 +86,36 @@ const UserDetails = () => {
             </div>
 
             <div className={ classes.DetailsContainer }>
-                <hr></hr>
-                <h5 style={{ paddingLeft: '10px'}}>Personal Details</h5>
-                <hr></hr>
+                <Heading title="Personal" />
                 <div className={ classes.InfoContainer }>
                     <div className={ classes.Info }>
                         <Table borderless>
                             <tbody>
-                                <UserDetail field="User ID" value="1001"/>
-                                <UserDetail field="First Name" value="Nishidh"/>
-                                <UserDetail field="Last Name" value="Patel"/>
-                                <UserDetail field="Gender" value="Male"/>
-                                <UserDetail field="Date of Birth" value="10/02/2020"/>
-                                <UserDetail field="Phone Number" value="8019840981"/>
-                                <UserDetail field="Aadhar/Pan Card No" value="12249804"/>
-                                <UserDetail field="Email Address" value="abc@gmail.com"/>
-                                <UserDetail field="Home Address" value="20 Yemen Road, Yemen"/>
-                                <UserDetail field="City" value="Surat"/>
-                                <UserDetail field="State" value="Gujarat"/>
-                                <UserDetail field="Zip Code" value="395005"/>
-                                <UserDetail field="Country" value="India"/> 
-                                <UserDetail field="Join Date" value="12/02/2021"/>  
+                                {
+                                    data ? 
+                                    personalDetails.map((detail) => (
+                                        <UserDetail key={ detail.field } field={ detail.field } value={ detail.value } />
+                                    )) : null
+                                }
                             </tbody>
                         </Table>
                     </div>
                     <div className={ classes.Photo }>
-                    
+                        <img src="" alt="" />                
                     </div>
                 </div>
             </div>
 
             <div className={ classes.DetailsContainer }>
-                <hr></hr>
-                <h5 style={{ paddingLeft: '10px'}}>Financial Details</h5>
-                <hr></hr>
+                <Heading title="Financial "/>
                 <div className={ classes.Info }>
                     <Table borderless>
                         <tbody>
-                            <UserDetail field="UPI" value="abc@okicici"/>
-                            <UserDetail field="Bank account No" value="981409814098014"/>
-                            <UserDetail field="IFSC Code" value="SBIN3103091"/>
+                            {
+                                financialDetails.map((detail) => (
+                                    <UserDetail key={ detail.field } field={ detail.field } value={ detail.value } />
+                                ))
+                            }
                         </tbody>
                     </Table>
                 </div>
@@ -72,56 +124,29 @@ const UserDetails = () => {
             <div className={ classes.TableContainer }>
                 <hr></hr>
                 <div className={ classes.TabContainer }>
-                    <Radio.Group as="div" value= { selectedTable } >
-                        <Radio.Button 
-                            value="withdraw" 
-                            onClick={ () => setSelectedTable('withdraw') } 
-                            style={{ marginRight: '15px' }}>
-                                Withdraw History
-                        </Radio.Button>
-                        <Radio.Button 
-                            value="purchase" 
-                            onClick={ () => setSelectedTable('purchase') }
-                            style={{ marginRight: '15px' }}>
-                                Purchase History
-                        </Radio.Button>
-                        <Radio.Button 
-                            value="selling" 
-                            onClick={ () => setSelectedTable('selling') }
-                            style={{ marginRight: '15px' }}>
-                                Selling History
-                        </Radio.Button>
-                        <Radio.Button 
-                            value="dividend" 
-                            onClick={ () => setSelectedTable('dividend') }
-                            style={{ marginRight: '15px' }}>
-                                Dividend History
-                        </Radio.Button>
-                    </Radio.Group>
+                    <RadioGroup selectedTable={ selectedTable } setSelectedTable={ setSelectedTable } /> 
                 </div>
                 <hr></hr>
-                <div className={ classes.SearchContainer }>
-                    <Search placeholder="Search" enterButton="Search" className={ classes.Search } />
-                </div>
+
                 <div className={ classes.Table }>
                     { 
                         selectedTable === 'withdraw' 
-                            ?   <CustomTable heading="Withdraw History" headers={ withdrawHistoryTableHeaders } /> 
+                            ?   <TabPanel title="Withdrawal" columns={ columns.USER_WITHDRAWAL_HISTORY } data={ dataSourceWithdraw } placeholder="Search by amount" onSearch={ onSearchWithdraw } /> 
                             :   null
                     }  
                     { 
                         selectedTable === 'purchase' 
-                            ?  <CustomTable heading="Purchase History" headers={ purchaseHistoryTableHeaders } /> 
+                            ?  <TabPanel title="Purchase"  columns={ columns.USER_PURCHASE_HISTORY } data={ dataSourcePurchase } placeholder="Search By ID" onSearch={ onSearchPurchase } /> 
                             :   null 
                     }  
                     { 
                         selectedTable === 'selling' 
-                            ?  <CustomTable heading="Selling History" headers={ sellingHistoryTableHeaders } /> 
+                            ?  <TabPanel title="Selling"  columns={ columns.USER_SELLING_HISTORY } data={ dataSourceSelling } placeholder="Search by ID" onSearch={ onSearchSelling }  /> 
                             :   null 
                     }  
                     { 
                         selectedTable === 'dividend' 
-                            ?  <CustomTable heading="Dividend History" headers={ dividendHistoryTableHeaders } /> 
+                            ?  <TabPanel title="Dividend" columns={ columns.USER_DIVIDEND_HISTORY } data={ dataSourceDividend } placeholder="Search by Date" onSearch={ onSearchDividend } /> 
                             :   null 
                     }  
                 </div>

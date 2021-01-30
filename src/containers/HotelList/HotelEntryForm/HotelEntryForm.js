@@ -40,18 +40,18 @@ const HotelEntryForm = (props) => {
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <h5>Hotel Image</h5>
                                 <input ref={inputButton} type="file" onChange={ async (e) => await onSelectFile(e) } accept="image/*" style={{ display: 'none' }} />
-                                <Button variant="danger" size="sm" onClick={ () => inputButton.current.click() }>
+                                <Button style={{ width: '150px', marginTop: '-10px' }} onClick={ () => inputButton.current.click() }>
                                     Upload
                                 </Button>
                             </div>
                             <div className={ classes.PreviewImage }>
-                                { preview ? <img src={ preview } alt="" width="400px" height="300px"/> : null }
+                                { preview ? <img src={ preview } alt="" width="395px" height="295px"/> : null }
                             </div>
                         </Col>
                     </Row>
                     <div className={ classes.ButtonContainer }>
-                        <Button variant="success" style={{ width: '100px' }}>Save</Button>
-                        <Button variant="danger" style={{ width: '100px' }} onClick={() => props.history.push('/hotels')}>Cancel</Button>
+                        <Button id="save" style={{ width: '150px' }}>Save</Button>
+                        <Button variant="danger" style={{ width: '150px' }} onClick={() => props.history.push('/hotels')}>Cancel</Button>
                     </div>
                 </Form>
             </Container>

@@ -39,14 +39,56 @@ const columns = {
         {   title:  'Total Tokens', dataIndex: 'total_tokens', align    },
         {   title:  'Dividend per token', dataIndex: 'dividend_token', align    },
     ],
-    WITHDRAW_REQUEST: [
+    WITHDRAWAL_REQUEST: [
         {   title:  'Date', dataIndex: 'date', align    },
         {   title:  'User ID', dataIndex: 'user_id', align     },
         {   title:  'UPI', dataIndex: 'upi', align    },
         {   title:  'Bank Account Number', dataIndex: 'account_no', align    },
         {   title:  'IFSC Code', dataIndex: 'ifsc', align    },
         {   title:  'Total Withdrawal Amount', dataIndex: 'amount', align    },
+    ],
+    USER_LIST: [
+        {   title:  'User ID', dataIndex: '_id', align     },
+        {   title:  'Join Date', dataIndex: 'createdAt', align    },
+        {   title:  'Full Name', dataIndex: 'name', align    },
+        {   title:  'Phone Number', dataIndex: 'mobileNo', align    },
+        {   title:  'Gender', dataIndex: 'gender', align    },
+        {   title:  'Total Token Purchase', dataIndex: 'total_token', align    },
+        {   title:  'Total Dividend Earned', dataIndex: 'total_dividend', align    },
+        {   title:  'Account Balance', dataIndex: 'balance', align    },
+    ],
+    USER_WITHDRAWAL_HISTORY: [
+        {   title:  'Date', dataIndex: 'date', align    },
+        {   title:  'Bank Account Number', dataIndex: 'account_no', align    },
+        {   title:  'UPI', dataIndex: 'upi', align    },
+        {   title:  'IFSC Code', dataIndex: 'ifsc', align    },
+        {   title:  'Total Amount', dataIndex: 'amount', align    },
+        {   title:  'Status', dataIndex: 'status', align    },
+    ],
+    USER_PURCHASE_HISTORY: [
+        {   title:  'Date', dataIndex: 'date', align    },
+        {   title:  'Purchase ID', dataIndex: 'purchase_id', align     },
+        {   title:  'Number of Tokens', dataIndex: 'no_token', align    },
+        {   title:  'Purchase Price', dataIndex: 'price', align    },
+        {   title:  'Total Amount', dataIndex: 'total', align    },
+        {   title:  'Status', dataIndex: 'status', align    },
+    ],
+    USER_SELLING_HISTORY: [
+        {   title:  'Date', dataIndex: 'date', align    },
+        {   title:  'Selling ID', dataIndex: 'selling_id', align     },
+        {   title:  'Number of Tokens', dataIndex: 'no_token', align    },
+        {   title:  'Sell Price', dataIndex: 'price', align    },
+        {   title:  'Total Amount', dataIndex: 'total', align    },
+        {   title:  'Status', dataIndex: 'status', align    },
+    ],
+    USER_DIVIDEND_HISTORY: [
+        {   title:  'Date', dataIndex: 'date', align    },
+        {   title:  'Number of tokens', dataIndex: 'total_tokens', align    },
+        {   title:  'Total value', dataIndex: 'value', align    }, 
+        {   title:  'Dividend per token', dataIndex: 'dividend_token', align    },
+        {   title:  'Total amount', dataIndex: 'amount', align    },
     ]
+
 }
 
 export default columns

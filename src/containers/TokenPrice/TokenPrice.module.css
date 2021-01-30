@@ -24,7 +24,31 @@
     margin-top: 25px;
 }
 
+.Header { 
+    display: flex;
+    justify-content: space-between
+}
+
+.Search {
+    max-width: 300px;
+    margin-top: -40px;
+}
+
 .LoginButton {
     width: 150px;
     margin-top: 25px;
+}
+
+:global .btn-primary {
+    background-color: #424770 !important;
+    border-color: #424770 !important;
+}
+
+:global .btn-secondary {
+    background-color: #0094D1 !important;
+    border-color: #0094D1 !important;
+}
+
+:global .react-tel-input { 
+    width: initial !important
 }

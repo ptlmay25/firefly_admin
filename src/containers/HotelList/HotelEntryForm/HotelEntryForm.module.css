@@ -16,9 +16,18 @@
     border: 1px solid black;
     height: 300px;
     width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
+    background-color: #d6d6d6
 }
 
 .ButtonContainer {
-    padding-top: 20px ;
-    padding-left: 40px;
+    padding: 40px;
+}
+
+:global .btn-primary{
+    background-color: #424770 !important;
+    border-color: #424770 !important;
 }
