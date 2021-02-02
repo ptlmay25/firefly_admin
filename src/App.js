@@ -21,19 +21,19 @@ class App extends Component {
     if(this.props.isLoggedIn) {
       routes = (
         <Switch>
-        <Route path="/" exact component={ Auth } />
-        <Route path="/users" exact component={ UserList } />
-        <Route path="/users/:uid" component={ UserDetails } />
-        <Route path="/purchase-history" component={ PurchaseHistory } />
-        <Route path="/selling-history" component={ SellingHistory } />
-        <Route path="/withdraw-history" component={ WithdrawHistory } />
-        <Route path="/token-price" component={ TokenPrice } />
-        <Route path="/withdraw-request" component={ WithdrawRequest } />
-        <Route path="/hotels" exact component={ HotelList } />
-        <Route path="/hotels/add" component={ HotelEntryForm } />
-        <Route path="/dash" component={ Dashboard } />
-        <Redirect to="/dash" />
-      </Switch>
+          <Route path="/" exact component={ Auth } />
+          <Route path="/users" exact component={ UserList } />
+          <Route path="/users/:uid" component={ UserDetails } />
+          <Route path="/purchase-history" component={ PurchaseHistory } />
+          <Route path="/selling-history" component={ SellingHistory } />
+          <Route path="/withdraw-history" component={ WithdrawHistory } />
+          <Route path="/token-price" component={ TokenPrice } />
+          <Route path="/withdraw-request" component={ WithdrawRequest } />
+          <Route path="/hotels" exact component={ HotelList } />
+          <Route path="/hotels/add" component={ HotelEntryForm } />
+          <Route path="/dash" component={ Dashboard } />
+          <Redirect to="/dash" />
+        </Switch>
       )
     } else {
       routes = (

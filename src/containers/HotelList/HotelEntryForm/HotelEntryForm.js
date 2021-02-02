@@ -22,7 +22,7 @@ const HotelEntryForm = (props) => {
             <NavigationBar />
             <Container className={ classes.FormContainer }>
                 <Form>
-                    <Row>
+                    <Row style={{ paddingTop: '10px' }}>
                         <Col md={6} className={ classes.InfoContainer }>
                             <h5 style={{ marginBottom: '50px' }}>Hotel/Business Profile</h5>
                             <div style={{ paddingLeft: '15px' }}>

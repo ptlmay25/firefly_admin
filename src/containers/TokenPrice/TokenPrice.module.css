@@ -39,6 +39,10 @@
     margin-top: 25px;
 }
 
+.ButtonDiv a{
+    color: white;
+}
+
 :global .btn-primary {
     background-color: #424770 !important;
     border-color: #424770 !important;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import NavigationBar from '../../components/Navigation/NavigationBar'
 import { Input, Space } from 'antd'
 
@@ -6,17 +6,37 @@ import classes from './SellingHistory.module.css'
 import CustomTable from '../../components/Shared/CustomTable/CustomTable'
 import columns from '../../resources/TableColumns'
 import Search from '../../components/Shared/Search/Search'
+import { useHttpClient } from '../../resources/http-hook'
+
+const data = null 
 
 const SellingHistory = () => {
-    const tokenCount = 50
-    const tokenValue = 20
-    const data = null
+    //eslint-disable-next-line
+    const [ tokenCount, setTokenCount ] = useState(50)
+    //eslint-disable-next-line
+    const [ tokenValue, setTokenValue ]  = useState(20)
+    const [ sellingData, setSellingData ] = useState(data)
+    const [ dataSource, setDataSource ] = useState(sellingData);
+    //eslint-disable-next-line
+    const { isLoading, error, sendRequest, clearError } = useHttpClient()
 
-    const [dataSource, setDataSource] = useState(data);
+    useEffect(() => {
+        const fetchData = () => {
+            sendRequest('/sell')
+                .then((response) => {
+                    setSellingData(response.data)
+                })
+                .catch((error) => console.log(error))
+        }
+        fetchData()
+    }, [sendRequest])
 
+    
     const onSearch = e => {
         setDataSource(data.filter( entry =>  entry.selling_id.includes(e.target.value) ))
     }
+
+
 
     return (
         <>
