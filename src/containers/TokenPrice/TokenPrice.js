@@ -14,6 +14,8 @@ import CustomTable from '../../components/Shared/CustomTable/CustomTable'
 import columns from '../../resources/TableColumns'
 import Search from '../../components/Shared/Search/Search'
 import "../../resources/firebase-context";
+import { apiContext } from '../../resources/api-context'
+import { showErrorModal } from '../../resources/Utilities'
 
 export class TokenPrice extends Component {
 
@@ -23,7 +25,7 @@ export class TokenPrice extends Component {
         confirmResult: null,
         verificationCode: "",
         inProgress: false,
-        data: null,
+        dividendHistory: null,
         dataSource: null,
         tokenHistory: {
             month_year: moment(),
@@ -40,18 +42,27 @@ export class TokenPrice extends Component {
     }
 
     componentDidMount() {
-        axios({ method: 'get', url: 'http://localhost:5000/api/token/' })
+        axios({ method: 'get', url: apiContext.baseURL + '/dividendHistory' })
         .then((response) => {
-            if(response.data.length > 0)
-                this.setState({ dataSource: response.data })
+            if(response.data.length > 0) {
+                const newData = response.data.map((element) => {
+                    return {
+                        ...element,
+                        key: element._id,
+                        createdAt: new Date(element.createdAt).toLocaleDateString('en-IN'),
+                    }
+                })
+                this.setState({
+                    dividendHistory: newData,
+                    dataSource: newData
+                })
+            }
         })
-        .catch((error) => {
-            throw error
-        }) 
+        .catch((error) => showErrorModal(error.message))
     }
 
     onSearch = e => {
-        this.setState({ dataSource: this.state.data.filter((entry) =>  entry.date.includes(e.target.value))})
+        this.setState({ dataSource: this.state.dividendHistory.filter((entry) =>  entry.date.includes(e.target.value))})
     }
 
     captchaInit = () => {
@@ -109,13 +120,13 @@ export class TokenPrice extends Component {
         const tokenHistory = this.state.tokenHistory
         tokenHistory.divident_per_token = tokenHistory.net_profit / tokenHistory.total_number_of_tokens
         this.setState({ tokenHistory: tokenHistory })
-        console.log(tokenHistory)
 
-        axios.post('http://localhost:5000/api/token/add', { tokenHistory })
+        axios.post(apiContext.baseURL + '/token/add', { tokenHistory })
         .then((response) => {
             this.setState({ allowUpdate: response.data.status === 'success' })
         })
         .catch((error) => {
+            showErrorModal(error.message)
             throw error
         })
     }

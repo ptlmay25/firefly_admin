@@ -15,7 +15,7 @@ export const useHttpClient = () => {
             return response.data             
         } catch (error) {
             setIsLoading(false)
-            setError(error.response.message || 'Something Went Wrong')
+            setError(error.message || 'Something Went Wrong')
             throw error
         }
     }, [])

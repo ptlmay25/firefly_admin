@@ -14,6 +14,8 @@ import UserDetails from './containers/UserDetails/UserDetails';
 import UserList from './containers/UserList/UserList';
 import WithdrawHistory from './containers/WithdrawHistory/WithdrawHistory';
 import WithdrawRequest from './containers/WithdrawRequest/WithdrawRequest';
+import ContactRequest from './containers/ContactRequest/ContactRequest';
+import ContactHistory from './containers/ContactHistory/ContactHistory';
 
 class App extends Component {
   render() {
@@ -29,6 +31,8 @@ class App extends Component {
           <Route path="/withdraw-history" component={ WithdrawHistory } />
           <Route path="/token-price" component={ TokenPrice } />
           <Route path="/withdraw-request" component={ WithdrawRequest } />
+          <Route path="/contact-request" component={ ContactRequest } />
+          <Route path="/contact-history" component={ ContactHistory } />
           <Route path="/hotels" exact component={ HotelList } />
           <Route path="/hotels/add" component={ HotelEntryForm } />
           <Route path="/dash" component={ Dashboard } />

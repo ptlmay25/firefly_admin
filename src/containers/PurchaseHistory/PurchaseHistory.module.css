@@ -11,6 +11,13 @@
     font-size: 16px;
 }
 
+.Center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
 .Header { 
     display: flex;
     justify-content: space-between

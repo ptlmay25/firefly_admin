@@ -45,6 +45,8 @@ class Dashboard extends Component {
                             <NavLink to="/purchase-history" className={ classes.Link }>Purchase History</NavLink>
                             <NavLink to="/selling-history" className={ classes.Link }>Sell History</NavLink>
                             <NavLink to="/withdraw-history" className={ classes.Link }>Withdraw History</NavLink>
+                            <NavLink to="/contact-history" className={ classes.Link }>Contact History</NavLink>
+                            <NavLink to="/contact-request" className={ classes.Link }>Contact Request</NavLink>
                             <NavLink to="/logout" className={ classes.Link }>Log out</NavLink>
                         </div>
                     </Col>

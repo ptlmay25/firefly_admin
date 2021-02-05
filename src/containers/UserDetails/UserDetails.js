@@ -5,19 +5,13 @@ import NavigationBar from '../../components/Navigation/NavigationBar'
 import Box from '../../components/UserDetails/Box/Box'
 import UserDetail from '../../components/UserDetails/UserDetail/UserDetail'
 import classes from './UserDetails.module.css'
-import columns from '../../resources/TableColumns'
-import TabPanel from '../../components/UserDetails/TabPanel/TabPanel'
+import TableContainer from './TableContainer/TableContainer'
 import Heading from '../../components/UserDetails/Heading'
-import RadioGroup from '../../components/UserDetails/RadioGroup/RadioGroup'
 import { useEffect } from 'react'
 import { useHttpClient } from '../../resources/http-hook'
+import Avatar from '../../assets/avatar.png'
 
 const UserDetails = (props) => {
-    const withdrawData = null
-    const purchaseData = null 
-    const sellingData = null   
-    const dividendData = null
-
     const [ data, setData ] = useState(null)
     const { sendRequest } = useHttpClient()
 
@@ -48,7 +42,7 @@ const UserDetails = (props) => {
             { field: 'State', value: data[0].state },
             { field: 'Zip Code', value: data[0].zipcode  },
             { field: 'Country', value: data[0].country },
-            { field: 'Join Date', value: data[0].createdAt },
+            { field: 'Join Date', value: new Date(data[0].createdAt).toLocaleDateString('EN-IN') },
         ]
         financialDetails  = [
             { field: 'UPI', value: data[0].UPI },
@@ -57,32 +51,13 @@ const UserDetails = (props) => {
         ]
     }
 
-    const [ selectedTable, setSelectedTable ] = useState('withdraw')
-
-    const [ dataSourceWithdraw, setDataSourceWithdraw ] = useState(withdrawData);
-    const [ dataSourcePurchase, setDataSourcePurchase ] = useState(purchaseData);
-    const [ dataSourceSelling, setDataSourceSelling ] = useState(sellingData);
-    const [ dataSourceDividend, setDataSourceDividend ] = useState(dividendData);
-    
-    const onSearchWithdraw = e => {
-        setDataSourceWithdraw(withdrawData.filter( entry =>  entry.amount.includes(e.target.value) ))
-    }
-    const onSearchPurchase = e => {
-        setDataSourcePurchase(purchaseData.filter( entry =>  entry.purchase_id.includes(e.target.value) ))
-    }
-    const onSearchSelling = e => {
-        setDataSourceSelling(sellingData.filter( entry =>  entry.selling_id.includes(e.target.value) ))
-    }
-    const onSearchDividend = e => {
-        setDataSourceDividend(dividendData.filter( entry =>  entry.date.includes(e.target.value) ))
-    }
-
     return (
         <div>
             <NavigationBar />
             <div className={ classes.BoxContainer }>
-                <Box title="Account Balance" amount="5,00,000" />
-                <Box title="Total Withdraw" amount="30,000" />
+                <Box title="Account Balance" amount={ data ? data.balance : 0 } />
+                <Box title="Total Withdraw" amount={ data ? data.total_withdraw : 0 } />
+                <Box title="Total Tokens" amount={ data ? data.total_tokens : 0 } />
             </div>
 
             <div className={ classes.DetailsContainer }>
@@ -101,7 +76,7 @@ const UserDetails = (props) => {
                         </Table>
                     </div>
                     <div className={ classes.Photo }>
-                        <img src="" alt="" />                
+                        <img src={ data.image ? data.image : Avatar } alt="" width="175px" height="175px" />                
                     </div>
                 </div>
             </div>
@@ -121,36 +96,7 @@ const UserDetails = (props) => {
                 </div>
             </div>
 
-            <div className={ classes.TableContainer }>
-                <hr></hr>
-                <div className={ classes.TabContainer }>
-                    <RadioGroup selectedTable={ selectedTable } setSelectedTable={ setSelectedTable } /> 
-                </div>
-                <hr></hr>
-
-                <div className={ classes.Table }>
-                    { 
-                        selectedTable === 'withdraw' 
-                            ?   <TabPanel title="Withdrawal" columns={ columns.USER_WITHDRAWAL_HISTORY } data={ dataSourceWithdraw } placeholder="Search by amount" onSearch={ onSearchWithdraw } /> 
-                            :   null
-                    }  
-                    { 
-                        selectedTable === 'purchase' 
-                            ?  <TabPanel title="Purchase"  columns={ columns.USER_PURCHASE_HISTORY } data={ dataSourcePurchase } placeholder="Search By ID" onSearch={ onSearchPurchase } /> 
-                            :   null 
-                    }  
-                    { 
-                        selectedTable === 'selling' 
-                            ?  <TabPanel title="Selling"  columns={ columns.USER_SELLING_HISTORY } data={ dataSourceSelling } placeholder="Search by ID" onSearch={ onSearchSelling }  /> 
-                            :   null 
-                    }  
-                    { 
-                        selectedTable === 'dividend' 
-                            ?  <TabPanel title="Dividend" columns={ columns.USER_DIVIDEND_HISTORY } data={ dataSourceDividend } placeholder="Search by Date" onSearch={ onSearchDividend } /> 
-                            :   null 
-                    }  
-                </div>
-            </div>
+            <TableContainer />
         </div> 
     )
 }

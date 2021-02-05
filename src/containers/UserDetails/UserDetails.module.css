@@ -24,9 +24,14 @@
     margin-top: 20px;
     margin-right: 80px;
     border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
+    background-color: #d6d6d6
 }
 
-.TableContainer {
+/* .TableContainer {
     padding: 10px 120px;
 }
 
@@ -46,4 +51,4 @@
 
 .Table {
     padding: 20px;
-}
+} */

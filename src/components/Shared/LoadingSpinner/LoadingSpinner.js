@@ -1,13 +1,13 @@
 import React from 'react';
-
-import './LoadingSpinner.css';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const LoadingSpinner = props => {
   return (
-    <div className={`${props.asOverlay && 'loading-spinner__overlay'}`}>
-      <div className="lds-dual-ring"></div>
-    </div>
-  );
+    <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} style={{ marginTop: '150px' }}>
+      { props.children }
+    </Spin>
+  ); 
 };
 
 export default LoadingSpinner;

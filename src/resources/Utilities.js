@@ -1,4 +1,4 @@
-import { Button } from 'antd'
+import { Button, Modal } from 'antd'
 
 export const toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -22,4 +22,11 @@ export const updateObject = (oldObject, updatedProperties) => {
         ...oldObject,
         ...updatedProperties
     }
+}
+
+export const showErrorModal = (content) => {
+    Modal.error({
+      title: 'Something went wrong!',
+      content: content,
+    });
 }

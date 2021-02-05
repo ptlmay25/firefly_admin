@@ -6,11 +6,6 @@
     justify-content: space-between;
 }
 
-.InfoContainer1{
-    padding: 0px 95px;
-    font-size: 16px;
-}
-
 .Header { 
     display: flex;
     justify-content: space-between

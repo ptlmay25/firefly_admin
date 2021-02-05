@@ -1,42 +1,53 @@
 import React, { useState, useEffect } from 'react'
 import { Space, Button, Table } from 'antd'
 
-// import CustomTable from '../../components/Shared/CustomTable/CustomTable'
 import columns from '../../resources/TableColumns'
 import NavigationBar from '../../components/Navigation/NavigationBar'
 import classes from './WithdrawRequest.module.css'
 import { itemRender } from '../../resources/Utilities'
 import Search from '../../components/Shared/Search/Search'
 import { useHttpClient } from '../../resources/http-hook'
+import { showErrorModal } from '../../resources/Utilities'
+import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 
-const data = [
-    { key: 1 , date: '1', user_id: '1', upi: '123', account_no: '1242', ifsc: '40981', amount: '41213' },
-    { key: 2, date: '2', user_id: '2', upi: '145', account_no: '4121', ifsc: '40981', amount: '41213' },
-    { key: 3, date: '3', user_id: '3', upi: '156', account_no: '4421', ifsc: '40981', amount: '41213' },
-    { key: 4, date: '4', user_id: '4', upi: '166', account_no: '4553', ifsc: '40981', amount: '41213' }
+
+const requestData = [
+    { key: 10, _id: 1, createdAt: '1/1/21', userId: 'ahaif', UPI: 'djhkwd', BankAccountNumber: '390148901890', IFSC: '83749179', total_amount: '1234414' },
+    { key: 22, _id: 2, createdAt: '1/2/21', userId: 'dadwfw', UPI: 'dfkwojfow', BankAccountNumber: '490181519058', IFSC: '389490814', total_amount: '1244' },
+    { key: 32, _id: 3, createdAt: '1/4/21', userId: 'fweofjw', UPI: 'fwokfpow', BankAccountNumber: '4928904890242', IFSC: '32023911', total_amount: '414314' },
+    { key: 43, _id: 4, createdAt: '1/4/21', userId: 'fwfwefui', UPI: 'wfwfwioo', BankAccountNumber: '4824908239420', IFSC: '31414121', total_amount: '435435' }
 ]
 
 const WithdrawRequest = () => {
-    // eslint-disable-next-line
-    const [ requests, setRequests ] = useState(5)
-    // eslint-disable-next-line
-    const [ value, setValue ] = useState(25000)
-    const [ requestData, setRequestData ] = useState(data)
-    const [dataSource, setDataSource] = useState(requestData);
+    // const [ value, setValue ] = useState(0)
+    // const [ requestData, setRequestData ] = useState([])
+    // const [ dataSource, setDataSource ] = useState([]);
+    // const { isLoading, sendRequest } = useHttpClient()
 
-    // eslint-disable-next-line
-    const { isLoading, error, sendRequest, clearError } = useHttpClient()
+    const [ dataSource, setDataSource ] = useState(requestData);
+    const isLoading = false
 
-    useEffect(() => {
-        const fetchData = () => {
-            sendRequest('/withdraw')
-                .then((response) => {
-                    setRequestData(response.data)
-                })
-                .catch((error) => console.log(error))
-        }
-        fetchData()
-    }, [sendRequest])
+    // useEffect(() => {
+    //     const fetchData = () => {
+    //         sendRequest('/withdrawRequest')
+    //             .then((response) => {
+    //                 let withrawRequestValue = 0
+    //                 const newData = response.data.map((data) => {
+    //                     withrawRequestValue += data.total_amount
+    //                     return {
+    //                         ...data,
+    //                         key: data._id,
+    //                         createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
+    //                     }
+    //                 })
+    //                 setValue(withrawRequestValue)
+    //                 setRequestData(newData)
+    //                 setDataSource(newData)
+    //             })
+    //             .catch((error) => showErrorModal(error.message))
+    //     }
+    //     fetchData()
+    // }, [sendRequest])
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -49,32 +60,45 @@ const WithdrawRequest = () => {
     };
 
     const onSearch = e => {
-        setDataSource(data.filter( entry =>  entry.user_id.includes(e.target.value) ))
-    }
+        setDataSource(requestData.filter( entry =>  entry.userId.includes(e.target.value) ))
+    } 
 
     return (
         <>
             <NavigationBar />
-            <div className={ classes.InfoContainer }>
-                <Space size="middle">User List: <Button type="primary" danger size="large">Withdraw</Button></Space>
-                <Search placeholder="Search By User ID" onSearch={ onSearch } className={ classes.Search }/>
-            </div>
-            <div className={ classes.InfoContainer1 }>
-                <p><Space size="middle"><u>Total Requests: </u> { requests } </Space></p>
-                <p><Space size="middle"><u>Withdraw Order Value: </u> { value } </Space></p>
-            </div>
-            <div className={ classes.TableContainer }>
-                <Table 
-                    columns={ columns.WITHDRAWAL_REQUEST }
-                    dataSource={ dataSource }
-                    pagination={{ defaultPageSize: 5, itemRender: itemRender , showSizeChanger: true, pageSizeOptions: [5,10,20] }} 
-                    bordered
-                    rowSelection={{
-                        type: 'checkbox',
-                        ...rowSelection,
-                    }}
-                    rowClassName={ classes.Row } />
-            </div>
+            { 
+                isLoading 
+                ?   <div className={ classes.Center }>
+                        <LoadingSpinner />
+                    </div> 
+                : null
+            }
+            {
+                !isLoading && requestData
+                ?   <>
+                        <div className={ classes.InfoContainer }>
+                            <Space size="middle">User List: <Button type="primary" danger size="large">Withdraw</Button></Space>
+                            <Search placeholder="Search By User ID" onSearch={ onSearch } className={ classes.Search }/>
+                        </div>
+                        <div className={ classes.InfoContainer1 }>
+                            <p><u>Total Requests: </u><span style={{ marginLeft: '20px'}}> { requestData.length } </span></p>
+                            {/* <p><u>Withdraw Order Value: </u><span style={{ marginLeft: '20px'}}> { value } </span></p> */}
+                        </div>
+                        <div className={ classes.TableContainer }>
+                            <Table 
+                                columns={ columns.WITHDRAWAL_REQUEST }
+                                dataSource={ dataSource }
+                                pagination={{ defaultPageSize: 5, itemRender: itemRender , showSizeChanger: true, pageSizeOptions: [5,10,20] }} 
+                                bordered
+                                rowSelection={{
+                                    type: 'checkbox',
+                                    ...rowSelection,
+                                }}
+                                rowClassName={ classes.Row } />
+                        </div>
+                    </>
+                : null
+            }
         </>
     )
 }

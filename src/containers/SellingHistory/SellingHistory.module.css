@@ -16,6 +16,13 @@
     padding: 20px 120px;
 }
 
+.Center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
 .Header { 
     display: flex;
     justify-content: space-between
