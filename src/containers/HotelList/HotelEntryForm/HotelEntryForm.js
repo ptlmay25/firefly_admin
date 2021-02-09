@@ -2,10 +2,12 @@ import React, { Component, createRef } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import CustomInput from '../../../components/HotelList/CustomInput/CustomInput'
 import NavigationBar from '../../../components/Navigation/NavigationBar'
-import { toBase64 } from '../../../resources/Utilities'
+import { showErrorModal, toBase64 } from '../../../resources/Utilities'
 import update from 'immutability-helper'
+import axios from 'axios'
 
 import classes from './HotelEntryForm.module.css'
+import { apiContext } from '../../../resources/api-context'
 
 class HotelEntryForm extends Component {
     
@@ -32,7 +34,10 @@ class HotelEntryForm extends Component {
 
     onSubmitHandler = (event) => {
         event.preventDefault()
-    }
+        axios.post(apiContext.baseURL + '/add', this.state.formData)
+            .then(() => this.props.history.push('/hotels'))
+            .catch((error) => showErrorModal(error.message))
+    } 
 
     onChangeHandler = (event, field) => {
         this.setState({ formData: update(this.state.formData, { [field]: { $set: event.target.value }}) })

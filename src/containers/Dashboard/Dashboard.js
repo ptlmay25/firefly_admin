@@ -56,7 +56,7 @@ class Dashboard extends Component {
                         <hr></hr>
                         <div style={{ padding: '10px 20px' }}>
                             <Row>
-                                <Card title="Token Price + Dividend" color="#06C167" cash_amount={ token.dividend } amount={ token.token_price } link="token-price"/>
+                                <Card title="Token Price" color="#06C167" cash_amount={ token.dividend } amount={ token.token_price } link="token-price"/>
                                 <Card title="Total Token Purchased" color="#CC20F6" cash_amount={ purchase.amount } amount={ purchase.total_tokens } link="purchase-history"/>
                             </Row>
 

@@ -2,23 +2,32 @@ import React, { Component } from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import './App.css';
-import Auth from './containers/Auth/Auth';
-import Dashboard from './containers/Dashboard/Dashboard'
-import HotelList from './containers/HotelList/HotelList';
-import HotelEntryForm from './containers/HotelList/HotelEntryForm/HotelEntryForm';
-import PurchaseHistory from './containers/PurchaseHistory/PurchaseHistory';
-import SellingHistory from './containers/SellingHistory/SellingHistory';
-import TokenPrice from './containers/TokenPrice/TokenPrice';
-import UserDetails from './containers/UserDetails/UserDetails';
-import UserList from './containers/UserList/UserList';
-import WithdrawHistory from './containers/WithdrawHistory/WithdrawHistory';
-import WithdrawRequest from './containers/WithdrawRequest/WithdrawRequest';
-import ContactRequest from './containers/ContactRequest/ContactRequest';
-import ContactHistory from './containers/ContactHistory/ContactHistory';
+import classes from './App.css';
+import LoadingSpinner from './components/Shared/LoadingSpinner/LoadingSpinner';
+import { Suspense } from 'react';
+
+const Auth = React.lazy(() => import('./containers/Auth/Auth'))
+const Dashboard = React.lazy(() => import('./containers/Dashboard/Dashboard'))
+const UserList = React.lazy(() => import('./containers/UserList/UserList'))
+const UserDetails = React.lazy(() => import('./containers/UserDetails/UserDetails'))
+const TokenPrice = React.lazy(() => import('./containers/TokenPrice/TokenPrice'))
+const HotelList = React.lazy(() => import('./containers/HotelList/HotelList'))
+const HotelEntryForm = React.lazy(() => import('./containers/HotelList/HotelEntryForm/HotelEntryForm'))
+const PurchaseHistory = React.lazy(() => import('./containers/PurchaseHistory/PurchaseHistory'))
+const SellingHistory = React.lazy(() => import('./containers/SellingHistory/SellingHistory'))
+const WithdrawHistory = React.lazy(() => import('./containers/WithdrawHistory/WithdrawHistory'))
+const ContactHistory = React.lazy(() => import('./containers/ContactHistory/ContactHistory'))
+const WithdrawRequest = React.lazy(() => import('./containers/WithdrawRequest/WithdrawRequest'))
+const ContactRequest = React.lazy(() => import('./containers/ContactRequest/ContactRequest'))
+
 
 class App extends Component {
   render() {
+    const fallback = (
+      <div className={classes.Center}>
+        <LoadingSpinner />
+      </div>
+    )
     let routes = null
     if(this.props.isLoggedIn) {
       routes = (
@@ -48,9 +57,9 @@ class App extends Component {
       )
     }
     return (
-      <div>
-      { routes }
-    </div>
+      <Suspense fallback={fallback}>
+        {routes}
+      </Suspense>
     )
   }
 }

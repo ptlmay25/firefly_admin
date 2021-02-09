@@ -34,9 +34,9 @@ const columns = {
         {   title:  'Full Name', dataIndex: 'name', align    }, 
         {   title:  'Account Number', dataIndex: 'account_number', align    },
         {   title:  'Message', dataIndex: 'message', align    },
-        {   title:  'Status', dataIndex: 'status', align    },
+        {   title:  'Status', dataIndex: 'status', align, style: { backgroundColor: '#6ae657', color: 'white' }    },
     ],
-    DIVIDEND_HISTORY: [
+    TOKEN_PRICE_HISTORY: [
         {   title:  'Month + Year', dataIndex: 'month', align     },
         {   title:  'Upload Date', dataIndex: 'date', align    },
         {   title:  'Total Revenue', dataIndex: 'revenue', align    }, 
@@ -45,12 +45,13 @@ const columns = {
         {   title:  '15% Service Fee', dataIndex: 'service_fee', align    },
         {   title:  'Net Profit', dataIndex: 'profit', align    },
         {   title:  'Total Tokens', dataIndex: 'total_tokens', align    },
-        {   title:  'Dividend per token', dataIndex: 'dividend_token', align    },
+        {   title:  'Token Price', dataIndex: 'token_price', align    },
     ],
     WITHDRAWAL_REQUEST: [
         {   title:  'Date', dataIndex: 'createdAt', align    },
         {   title:  'User ID', dataIndex: 'userId', align     },
-        {   title:  'UPI', dataIndex: 'UPI', align    },
+        {   title:  'Withdraw ID', dataIndex: 'withdraw_id', align    },
+        {   title:  'Account Holder Name', dataIndex: 'acc_holder_name', align    },
         {   title:  'Bank Account Number', dataIndex: 'BankAccountNumber', align    },
         {   title:  'IFSC Code', dataIndex: 'IFSC', align    },
         {   title:  'Total Withdrawal Amount', dataIndex: 'total_amount', align    },

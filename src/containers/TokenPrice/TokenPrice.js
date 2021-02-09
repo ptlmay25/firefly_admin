@@ -30,14 +30,15 @@ export class TokenPrice extends Component {
         tokenHistory: {
             month_year: moment(),
             upload_date: moment(),
+            price_per_token: 1000,
             total_revenue: 0,
             operating_expenses: 0,
             interest_and_taxes: 0,
             service_fee: 0,
             net_profit: 0,
             total_number_of_tokens: 0,
-            previous_divident: 0,
             divident_per_token: 0,
+            new_token_price: 0,
         },
     }
 
@@ -104,7 +105,6 @@ export class TokenPrice extends Component {
             .confirm(verificationCode)
             .then(user => {
               this.setState({ otpSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false });    
-            //   alert("Hurray, Your OTP is verified successfully..!!!!");
             // Send update request here
             })
             .catch(error => {
@@ -119,6 +119,7 @@ export class TokenPrice extends Component {
         event.preventDefault()
         const tokenHistory = this.state.tokenHistory
         tokenHistory.divident_per_token = tokenHistory.net_profit / tokenHistory.total_number_of_tokens
+        tokenHistory.new_token_price = tokenHistory.divident_per_token + tokenHistory.price_per_token
         this.setState({ tokenHistory: tokenHistory })
 
         axios.post(apiContext.baseURL + '/token/add', { tokenHistory })
@@ -135,14 +136,15 @@ export class TokenPrice extends Component {
         const tokenHistoryCopy = {
             month_year: moment(),
             upload_date: moment(),
+            price_per_token: 1000,
             total_revenue: 0,
             operating_expenses: 0,
             interest_and_taxes: 0,
             service_fee: 0,
             net_profit: 0,
             total_number_of_tokens: 0,
-            previous_divident: 0,
             divident_per_token: 0,
+            new_token_price: 0,
         }
         this.setState({ 
             tokenHistory: tokenHistoryCopy,
@@ -191,20 +193,26 @@ export class TokenPrice extends Component {
 
     render() {
         const { otpSent, allowUpdate, verificationCode, dataSource, inProgress, phone, tokenHistory } = this.state
-        const { month_year, upload_date, total_revenue, operating_expenses, interest_and_taxes, service_fee, net_profit, total_number_of_tokens, previous_divident, divident_per_token } = tokenHistory
-        const date = new Date()
+        const { price_per_token, month_year, upload_date, total_revenue, operating_expenses, interest_and_taxes, service_fee, net_profit, total_number_of_tokens, divident_per_token, new_token_price } = tokenHistory
+        const date = new Date().toLocaleDateString('EN-IN')
         return (
             <>
                 <NavigationBar />
                 <div className={ classes.FormContainer }>
                     <div style={{ display: 'flex', justifyContent: 'space-between', paddingRight: '140px' }}>
-                        <h6><u>Dividend Calculation</u></h6>
+                        <h6><u>Token Price Calculation</u></h6>
                         <Button variant="danger" style={{ width: '150px' }} onClick={() => this.onClearHandler()}>Clear All</Button>
                     </div>
                     <Container fluid style={{ marginTop: '40px' }}>
                         <form onSubmit={(e) => this.onFormSubmit(e)}>
                             <Row>
                                 <Col md={5}>
+                                    <InputDiv 
+                                        label="Price per token" 
+                                        type="number" 
+                                        value={ price_per_token } 
+                                        disabled/>
+
                                     <InputDiv 
                                         label="Month + Year" 
                                         type="month" 
@@ -267,20 +275,18 @@ export class TokenPrice extends Component {
                                         required
                                         disabled={ allowUpdate } />
                                     
-                                    <div style={{ padding: '40px 50px 0' }}>
+                                    <div style={{ padding: '80px 50px 0' }}>
                                         <Table borderless size="sm">
                                             <tbody>
                                                 <tr>
+                                                    <td colSpan={2} style={{ fontWeight: '500' }}>Today's Dividend per token: </td>
+                                                    <td colSpan={2} style={{ fontWeight: '500' }}>{ divident_per_token === 0 ? '' : divident_per_token }</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{ fontWeight: '500' }}>New Token Price: </td>
+                                                    <td style={{ fontWeight: '500' }}>{ new_token_price === 0 ? '' : new_token_price }</td>
                                                     <td style={{ fontWeight: '500' }}>Date: </td>
-                                                    <td style={{ fontWeight: '500' }}>{date.getDate()}/{date.getMonth()}/{date.getFullYear()}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style={{ fontWeight: '500' }}>Last Dividend: </td>
-                                                    <td style={{ fontWeight: '500' }}>{ previous_divident === 0 ? '' : previous_divident }</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style={{ fontWeight: '500' }}>Today's Dividend per token: </td>
-                                                    <td style={{ fontWeight: '500' }}>{ divident_per_token === 0 ? '' : divident_per_token }</td>
+                                                    <td style={{ fontWeight: '500' }}>{date}</td>
                                                 </tr>
                                             </tbody>
                                         </Table>
@@ -296,10 +302,10 @@ export class TokenPrice extends Component {
                 </div>
                 <div className={ classes.TableContainer }>
                     <div className={classes.Header}>
-                        <h6>Dividend History</h6>
+                        <h6>Token Price History</h6>
                         <Search placeholder="Search By Date" onSearch={ this.onSearch } className={ classes.Search }/>
                     </div>
-                    <CustomTable columns={ columns.DIVIDEND_HISTORY } data={ dataSource } />
+                    <CustomTable columns={ columns.TOKEN_PRICE_HISTORY } data={ dataSource } />
                 </div>
                 
                 <Container as="div" id="login" className={ classes.LoginContainer }>

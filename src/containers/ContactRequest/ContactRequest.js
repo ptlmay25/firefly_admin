@@ -9,17 +9,20 @@ import Search from '../../components/Shared/Search/Search'
 import { useHttpClient } from '../../resources/http-hook'
 import { showErrorModal } from '../../resources/Utilities'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
+import axios from 'axios'
+import { apiContext } from '../../resources/api-context'
 
 const ContactRequest = () => {
     // eslint-disable-next-line
     const [ requests, setRequests ] = useState(5)
     const [ requestData, setRequestData ] = useState([])
     const [ dataSource, setDataSource ] = useState([]);
+    const [ selectedRows, setSelectedRows ] = useState()
     const { isLoading, sendRequest } = useHttpClient()
 
     useEffect(() => {
         const fetchData = () => {
-            sendRequest('/contactRequest')
+            sendRequest('/contact')
                 .then((response) => {
                     const newData = response.data.map((data) => {
                         return {
@@ -38,7 +41,7 @@ const ContactRequest = () => {
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
-          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            setSelectedRows(selectedRows)
         },
         getCheckboxProps: (record) => ({
           disabled: record.name === 'Disabled User',
@@ -48,6 +51,33 @@ const ContactRequest = () => {
 
     const onSearch = e => {
         setDataSource(requestData.filter( entry =>  entry.name.includes(e.target.value) ))
+    }
+
+    const onSolvedHandler = () => {
+        if(selectedRows.length === 0) {
+            alert("Select entries to withdraw first")
+        } else {
+            selectedRows.forEach(element => {
+               const elementCopy = { ...element }
+               elementCopy.request_number = element.key
+               
+               axios.post(apiContext.baseURL + `/contact/delete/${elementCopy.request_number}`)
+                    .then((response) => {
+                        if(response.status === 'success') {
+                            axios.post(apiContext.baseURL + '/withdrawHistory/add', elementCopy)
+                            .then(() => {
+
+                            })
+                            .catch((error) => {
+                                showErrorModal(error.message)
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        showErrorModal(error.message)
+                    })
+            });
+        }
     }
 
     return (
@@ -64,7 +94,7 @@ const ContactRequest = () => {
                 !isLoading && requestData
                 ?   <>
                         <div className={ classes.InfoContainer }>
-                            <Space size="middle">Contact Us requests: <Button type="primary" danger size="large">Solved</Button></Space>
+                            <Space size="middle">Contact Us requests: <Button type="primary" danger size="large" onClick={() => onSolvedHandler()}>Solved</Button></Space>
                             <Search placeholder="Search By User ID" onSearch={ onSearch } className={ classes.Search }/>
                         </div>
                         <div className={ classes.InfoContainer1 }>
