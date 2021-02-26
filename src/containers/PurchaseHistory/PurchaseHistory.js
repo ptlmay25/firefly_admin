@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import NavigationBar from '../../components/Navigation/NavigationBar'
-import { Input, Space } from 'antd'
 import { useHttpClient } from '../../resources/http-hook'
 
 import classes from './PurchaseHistory.module.css'
 import CustomTable from '../../components/Shared/CustomTable/CustomTable'
 import columns from '../../resources/TableColumns'
 import Search from '../../components/Shared/Search/Search'
-import { showErrorModal } from '../../resources/Utilities'
+import { convertToINR, showErrorModal } from '../../resources/Utilities'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 
 const PurchaseHistory = () => {
@@ -25,16 +24,20 @@ const PurchaseHistory = () => {
                     let totalTokenValue = 0
                     const newData = response.data.map((data) => {
                         tempTokenCount += data.num_of_tokens
-                        totalTokenValue += data.total_price
+                        totalTokenValue += data.num_of_tokens * data.token_price
                         return {
-                            ...data,
                             key: data._id,
-                            createdAt: new Date(data.createdAt).toLocaleDateString('en-IN'),
-                            status: response.status
+                            pur_id: data._id,
+                            user_acc_num: data.user_id,
+                            status: data.status,
+                            token_price: `₹ ${convertToINR(data.token_price) }`,
+                            num_of_tokens: data.num_of_tokens,
+                            total_price: `₹ ${ convertToINR(data.num_of_tokens * data.token_price) }`,
+                            date: new Date(data.date).toLocaleDateString('en-IN'),
                         }
                     })
                     setTokenCount(tempTokenCount)
-                    setTokenValue(totalTokenValue)
+                    setTokenValue(`₹ ${ convertToINR(totalTokenValue) }`)
                     setPurchaseData(newData)
                     setDataSource(newData)
                 })
@@ -45,7 +48,7 @@ const PurchaseHistory = () => {
 
 
     const onSearch = e => {
-        setDataSource(purchaseData.filter( entry =>  entry.purchase_id.includes(e.target.value) ))
+        setDataSource(purchaseData.filter( entry =>  entry.pur_id.includes(e.target.value) ))
     }
 
     return (
@@ -62,14 +65,10 @@ const PurchaseHistory = () => {
                 !isLoading && purchaseData
                 ?   <>  
                         <div className={ classes.InfoContainer }>
-                            <Space size="middle"><p> <u>Total Number of Tokens Purchased: </u> { tokenCount }</p></Space>
+                            <h6> Total Number of Tokens Purchased :- &nbsp; <span style={{ fontSize: '20px' }}>{ tokenCount }</span> </h6>
+                            <h6> Total Token Value :- &nbsp; <span style={{ fontSize: '20px' }}>{ tokenValue }</span> </h6>
                         </div>
-                        <div className={ classes.InfoContainer1 }>
-                            <Space size="middle"> 
-                                <u>Total Token value: </u> 
-                                <Input size="medium" value={ tokenValue } disabled style={{ width: '100px'}}/>
-                            </Space>
-                        </div>
+                        
                         <div className={ classes.TableContainer }>
                             <div className={classes.Header}>
                                 <h6>Token Purchase History</h6>

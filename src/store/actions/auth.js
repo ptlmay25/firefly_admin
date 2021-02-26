@@ -5,3 +5,9 @@ export const authStart = () => {
         type: actionTypes.AUTH_START
     }
 }
+
+export const authEnd = () => {
+    return {
+        type: actionTypes.AUTH_END
+    }
+}

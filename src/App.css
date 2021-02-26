@@ -9,10 +9,3 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
-
-.Center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    vertical-align: middle;
-}

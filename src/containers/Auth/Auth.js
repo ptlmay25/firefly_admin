@@ -5,7 +5,6 @@ import PhoneInput from 'react-phone-input-2'
 import { Container } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
-
 import AdminImage from '../../assets/admin.png'
 import classes from './Auth.module.css'
 import "../../resources/firebase-context";
@@ -14,28 +13,31 @@ import * as actions from './../../store/actions/index'
 
 class Auth extends Component {
     state = {
-        OTPSent: false,
-        confirmResult: null,
-        verificationCode: "",
-        inProgress: false
+      OTPSent: false,
+      confirmResult: null,
+      verificationCode: "",
+      inProgress: false
     }
 
+    // To create a new Captcha for OTP verification
     captchaInit = () => {
-        if (this.applicationVerifier && this.recaptchaWrapperRef) {
-          this.applicationVerifier.clear()
-          this.recaptchaWrapperRef.innerHTML = `<div id="recaptcha-container"></div>`
+      if (this.applicationVerifier && this.recaptchaWrapperRef) {
+        this.applicationVerifier.clear()
+        this.recaptchaWrapperRef.innerHTML = `<div id="recaptcha-container"></div>`
+      }
+  
+      this.applicationVerifier = new firebase.auth.RecaptchaVerifier(
+        "recaptcha-container",
+        {
+          size: "invisible"
         }
-    
-        this.applicationVerifier = new firebase.auth.RecaptchaVerifier(
-          "recaptcha-container",
-          {
-            size: "invisible"
-          }
-        );
+      );
     }
 
+    // To send OTP to the entered mobile number
     sendOtp = (event) => {
-        event.preventDefault();
+      event.preventDefault();
+      if(this.state.phone === '917600257008' || this.state.phone === '917874994529') {
         this.captchaInit();
         this.setState({ inProgress: true });
     
@@ -48,26 +50,32 @@ class Auth extends Component {
             this.setState({ inProgress: false });
             alert(error.message);
           })
+      }
+      else {
+        alert("The Number you have entered is not authenticated! Kindly enter administrator's phone number.")
+      }
     }
     
+    // To verify the input OTP
     verifyOtp = (event) => {
-        event.preventDefault();
-    
-        const { confirmResult, verificationCode } = this.state
-        if (verificationCode.length === 6) {
-          confirmResult
-            .confirm(verificationCode)
-            .then(user => {
-              this.setState({ OTPSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false });    
-              this.props.onAuthStart()
-              this.props.history.push('/dash')
-            })
-            .catch(error => {
-              alert(error.message)
-            })
-        } else {
-          alert("Please enter a 6 digit OTP code.");
-        }
+      event.preventDefault();
+  
+      const { confirmResult, verificationCode } = this.state
+      if (verificationCode.length === 6) {
+        confirmResult
+          .confirm(verificationCode)
+          .then(user => {
+            this.setState({ OTPSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false });    
+            this.props.onAuthStart()
+            localStorage.setItem('token', true)
+            this.props.history.push('/dash')
+          })
+          .catch(error => {
+            alert(error.message)
+          })
+      } else {
+        alert("Please enter a 6 digit OTP code.");
+      }
     }
 
     render() {

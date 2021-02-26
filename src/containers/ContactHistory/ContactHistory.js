@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import NavigationBar from '../../components/Navigation/NavigationBar'
-import { Space } from 'antd'
 
 import classes from './ContactHistory.module.css'
 import CustomTable from '../../components/Shared/CustomTable/CustomTable'
@@ -53,7 +52,7 @@ const ContactHistory = () => {
                 !isLoading && contactHistory
                 ?   <>
                         <div className={ classes.InfoContainer }>
-                            <Space size="middle"><p> <u>Total Requests: </u> { contactHistory.length }</p></Space>
+                            <h6> Total Requests :- &nbsp; <span style={{ fontSize: '20px' }}>{ contactHistory.length }</span> </h6>
                         </div>
 
                         <div className={ classes.TableContainer }>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Space, Button, Table } from 'antd'
+import { Button, Table } from 'antd'
 
 import columns from '../../resources/TableColumns'
 import NavigationBar from '../../components/Navigation/NavigationBar'
@@ -93,14 +93,18 @@ const ContactRequest = () => {
             {
                 !isLoading && requestData
                 ?   <>
-                        <div className={ classes.InfoContainer }>
-                            <Space size="middle">Contact Us requests: <Button type="primary" danger size="large" onClick={() => onSolvedHandler()}>Solved</Button></Space>
-                            <Search placeholder="Search By User ID" onSearch={ onSearch } className={ classes.Search }/>
+                        <div className={ classes.InfoContainer }>                            
+                            <Button type="primary" danger size="large" onClick={() => onSolvedHandler() } style={{ width: '200px' }}>Solved</Button>                    
+                            <div>
+                                <h6> Total Requests :- &nbsp; <span style={{ fontSize: '20px' }}>{ requests }</span> </h6>
+                            </div>
                         </div>
-                        <div className={ classes.InfoContainer1 }>
-                            <p><u>Total Requests: </u><span style={{ marginLeft: '20px'}}> { requests } </span></p>
-                        </div>
+
                         <div className={ classes.TableContainer }>
+                            <div className={classes.Header}>
+                                <h6>Contact Us Requests</h6>
+                                <Search placeholder="Search By User ID" onSearch={ onSearch } className={ classes.Search }/>
+                            </div>
                             <Table 
                                 columns={ columns.CONTACT_REQUEST }
                                 dataSource={ dataSource }

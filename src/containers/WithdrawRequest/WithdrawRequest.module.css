@@ -1,22 +1,31 @@
 .InfoContainer{
     margin-top: 50px;
     padding: 20px 90px;
-    font-size: 16px;
-    display: flex;
-    justify-content: space-between;
 }
 
-.InfoContainer1{
-    padding: 0px 95px;
-    font-size: 16px;
+.InfoContainer div h6 {
+    border-bottom: 1px solid black;
+    padding: 5px;
+    width: max-content;
+}
+
+.InfoContainer div {
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+.Header { 
+    display: flex;
+    justify-content: space-between
 }
 
 .Search {
-    max-width: 250px;
+    max-width: 300px;
+    margin-top: -40px;
 }
 
 .TableContainer {
-    margin-top: 40px;
+    /* margin-top: 40px; */
     padding: 20px 120px;
 }
 

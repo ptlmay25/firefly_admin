@@ -1,14 +1,17 @@
 .InfoContainer{
     margin-top: 50px;
     padding: 20px 80px;
-    font-size: 16px;
-    display: flex;
-    justify-content: space-between;
 }
 
-.InfoContainer1{
-    padding: 0px 95px;
-    font-size: 16px;
+.InfoContainer h6 {
+    border-bottom: 1px solid black;
+    padding: 5px;
+    width: max-content;
+}
+
+.TableContainer {
+    margin-top: 30px;
+    padding: 20px 120px;
 }
 
 .Center{
@@ -28,8 +31,3 @@
     margin-top: -40px;
 }
 
-
-.TableContainer {
-    margin-top: 40px;
-    padding: 20px 120px;
-}

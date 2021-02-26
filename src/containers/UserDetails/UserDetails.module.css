@@ -31,24 +31,9 @@
     background-color: #d6d6d6
 }
 
-/* .TableContainer {
-    padding: 10px 120px;
-}
-
-.TabContainer {
-    padding-left: 30px;
-}
-
-.SearchContainer {
+.Center{
     display: flex;
-    justify-content: flex-end;
-    padding: 15px 30px;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
 }
-
-.Search {
-    max-width: 250px;
-}
-
-.Table {
-    padding: 20px;
-} */

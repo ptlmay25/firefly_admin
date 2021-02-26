@@ -1,104 +1,125 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-
 import NavigationBar from '../../components/Navigation/NavigationBar'
 import Box from '../../components/UserDetails/Box/Box'
 import UserDetail from '../../components/UserDetails/UserDetail/UserDetail'
 import classes from './UserDetails.module.css'
 import TableContainer from './TableContainer/TableContainer'
 import Heading from '../../components/UserDetails/Heading'
-import { useEffect } from 'react'
-import { useHttpClient } from '../../resources/http-hook'
 import Avatar from '../../assets/avatar.png'
+import { convertToINR, showErrorModal } from '../../resources/Utilities'
 
-const UserDetails = (props) => {
-    const [ data, setData ] = useState(null)
-    const { sendRequest } = useHttpClient()
+import axios from 'axios'
+import { apiContext } from '../../resources/api-context'
+import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 
-    useEffect(() => {
-        const id = props.location.state    
-        const fetchUserData = () => {
-            sendRequest(`/user/view/${id}`).then((response) => {
-                setData(response.data)
-            })
-        }
-        fetchUserData()    
-    }, [sendRequest, props])
 
-    let personalDetails = []
-    let financialDetails = []
-    if(data) {
-        personalDetails = [
-            { field: 'User ID', value: data[0]._id },
-            { field: 'First Name', value: data[0].firstName },
-            { field: 'Last Name', value: data[0].lastName },
-            { field: 'Gender', value: data[0].gender },
-            { field: 'Date of Birth', value: data[0].DOB },
-            { field: 'Phone Number', value: data[0].mobileNo },
-            { field: 'Aadhar/Pan Card Number', value: data[0].aadharCardNo },
-            { field: 'Email Address', value: data[0].emailAddress },
-            { field: 'Home Address', value: data[0].homeAddress },
-            { field: 'City', value: data[0].city },
-            { field: 'State', value: data[0].state },
-            { field: 'Zip Code', value: data[0].zipcode  },
-            { field: 'Country', value: data[0].country },
-            { field: 'Join Date', value: new Date(data[0].createdAt).toLocaleDateString('EN-IN') },
-        ]
-        financialDetails  = [
-            { field: 'UPI', value: data[0].UPI },
-            { field: 'Bank Account Number', value: data[0].bankAccountNo },
-            { field: 'IFSC Code', value: data[0].IFSC },
-        ]
+class UserDetails extends Component {
+
+    state = {
+        data: {},
+        isLoading: true
     }
 
-    return (
-        <div>
-            <NavigationBar />
-            <div className={ classes.BoxContainer }>
-                <Box title="Account Balance" amount={ data ? data.balance : 0 } />
-                <Box title="Total Withdraw" amount={ data ? data.total_withdraw : 0 } />
-                <Box title="Total Tokens" amount={ data ? data.total_tokens : 0 } />
-            </div>
+    componentDidMount() {
+        const id = this.props.location.state
 
-            <div className={ classes.DetailsContainer }>
-                <Heading title="Personal" />
-                <div className={ classes.InfoContainer }>
-                    <div className={ classes.Info }>
-                        <Table borderless>
-                            <tbody>
-                                {
-                                    data ? 
-                                    personalDetails.map((detail) => (
-                                        <UserDetail key={ detail.field } field={ detail.field } value={ detail.value } />
-                                    )) : null
-                                }
-                            </tbody>
-                        </Table>
-                    </div>
-                    <div className={ classes.Photo }>
-                        <img src={ data.image ? data.image : Avatar } alt="" width="175px" height="175px" />                
-                    </div>
-                </div>
-            </div>
+        axios.get(apiContext.baseURL + `/user/view/${id}`)
+            .then((response) => {
+                this.setState({ data: response.data.data[0], isLoading: false })
+            })
+            .catch((error) => {
+                this.setState({ isLoading: false })
+                showErrorModal(error.message)
+            })
+    }
 
-            <div className={ classes.DetailsContainer }>
-                <Heading title="Financial "/>
-                <div className={ classes.Info }>
-                    <Table borderless>
-                        <tbody>
-                            {
-                                financialDetails.map((detail) => (
-                                    <UserDetail key={ detail.field } field={ detail.field } value={ detail.value } />
-                                ))
-                            }
-                        </tbody>
-                    </Table>
-                </div>
-            </div>
+    render() {
+        let personalDetails = []
+        let financialDetails = []
+        const data = this.state.data
 
-            <TableContainer />
-        </div> 
-    )
+        if(data) {
+            personalDetails = [
+                { field: 'User ID', value: data._id },
+                { field: 'First Name', value: data.firstName },
+                { field: 'Last Name', value: data.lastName },
+                { field: 'Gender', value: data.gender },
+                { field: 'Date of Birth', value: data.DOB },
+                { field: 'Phone Number', value: data.mobileNo },
+                { field: 'Aadhar/Pan Card Number', value: data.aadharCardNo },
+                { field: 'Email Address', value: data.emailAddress },
+                { field: 'Home Address', value: data.homeAddress },
+                { field: 'City', value: data.city },
+                { field: 'State', value: data.state },
+                { field: 'Zip Code', value: data.zipcode  },
+                { field: 'Country', value: data.country },
+                { field: 'Join Date', value: new Date(data.createdAt).toLocaleDateString('EN-IN') },
+            ]
+            financialDetails  = [
+                { field: 'UPI', value: data.UPI },
+                { field: 'Bank Account Number', value: data.bankAccountNo },
+                { field: 'IFSC Code', value: data.IFSC },
+            ]
+        }
+
+        return (
+            <div>
+                <NavigationBar />
+                {
+                    this.state.isLoading
+                        ?   <div className={ classes.Center }>
+                                <LoadingSpinner />
+                            </div>
+                        :   <>
+                                <div className={ classes.BoxContainer }>
+                                    <Box title="Account Balance" amount={ data.acc_bal ? `₹ ${ convertToINR(data.acc_bal) }` : '₹ 0.00' } />
+                                    <Box title="Total Withdraw" amount={ data.total_withdraw ? ` ₹ ${ convertToINR(data.total_withdraw) }` : '₹ 0.00' } />
+                                    <Box title="Total Tokens" amount={ data ? data.tokens : 0 } />
+                                </div>
+
+                                <div className={ classes.DetailsContainer }>
+                                    <Heading title="Personal" />
+                                    <div className={ classes.InfoContainer }>
+                                        <div className={ classes.Info }>
+                                            <Table borderless>
+                                                <tbody>
+                                                    {
+                                                        data ? 
+                                                        personalDetails.map((detail) => (
+                                                            <UserDetail key={ detail.field } field={ detail.field } value={ detail.value } />
+                                                        )) : null
+                                                    }
+                                                </tbody>
+                                            </Table>
+                                        </div>
+                                        <div className={ classes.Photo }>
+                                            <img src={ Avatar } alt="" width="175px" height="175px" />                
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={ classes.DetailsContainer }>
+                                    <Heading title="Financial "/>
+                                    <div className={ classes.Info }>
+                                        <Table borderless>
+                                            <tbody>
+                                                {
+                                                    financialDetails.map((detail) => (
+                                                        <UserDetail key={ detail.field } field={ detail.field } value={ detail.value } />
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                </div>
+
+                                <TableContainer />
+                            </>
+                }
+            </div>    
+        )
+    }
 }
 
 export default UserDetails

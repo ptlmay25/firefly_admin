@@ -11,6 +11,7 @@ const TableContainer = () => {
     const purchaseData = null 
     const sellingData = null   
     const dividendData = null
+    const addfundData = null
 
     const [ selectedTable, setSelectedTable ] = useState('withdraw')
 
@@ -18,6 +19,7 @@ const TableContainer = () => {
     const [ dataSourcePurchase, setDataSourcePurchase ] = useState(purchaseData);
     const [ dataSourceSelling, setDataSourceSelling ] = useState(sellingData);
     const [ dataSourceDividend, setDataSourceDividend ] = useState(dividendData);
+    const [ dataSourceAddfund, setDataSourceAddfund ] = useState(addfundData);
     
     const onSearchWithdraw = e => {
         setDataSourceWithdraw(withdrawData.filter( entry =>  entry.amount.includes(e.target.value) ))
@@ -31,6 +33,10 @@ const TableContainer = () => {
     const onSearchDividend = e => {
         setDataSourceDividend(dividendData.filter( entry =>  entry.date.includes(e.target.value) ))
     }
+    const onSearchAddfund = e => {
+        setDataSourceAddfund(addfundData.filter( entry =>  entry.date.includes(e.target.value) ))
+    }
+
     return (
         <div className={ classes.TableContainer }>
                 <hr></hr>
@@ -58,6 +64,11 @@ const TableContainer = () => {
                     { 
                         selectedTable === 'dividend' 
                             ?  <TabPanel title="Dividend" columns={ columns.USER_DIVIDEND_HISTORY } data={ dataSourceDividend } placeholder="Search by Date" onSearch={ onSearchDividend } /> 
+                            :   null 
+                    }
+                    { 
+                        selectedTable === 'addfund' 
+                            ?  <TabPanel title="Add Fund" columns={ columns.USER_ADD_FUND_HISTORY } data={ dataSourceAddfund } placeholder="Search by Date" onSearch={ onSearchAddfund } /> 
                             :   null 
                     }  
                 </div>

@@ -2,10 +2,10 @@ const align = 'center'
 
 const columns = {
     PURCHASE_HISTORY: [
-        {   title:  'Date', dataIndex: 'createdAt', align    },
+        {   title:  'Date', dataIndex: 'date', align    },
         {   title:  'Purchase ID', dataIndex: 'pur_id', align     },
         {   title:  'User Account Number', dataIndex: 'user_acc_num', align    }, 
-        {   title:  'Number of Tokens', dataIndex: 'num_of_token', align    },
+        {   title:  'Number of Tokens', dataIndex: 'num_of_tokens', align    },
         {   title:  'Token Price', dataIndex: 'token_price', align    },
         {   title:  'Total', dataIndex: 'total_price', align    },
         {   title:  'Status', dataIndex: 'status', align    },
@@ -42,8 +42,8 @@ const columns = {
         {   title:  'Total Revenue', dataIndex: 'revenue', align    }, 
         {   title:  'Operating Expenses', dataIndex: 'expenses', align    },
         {   title:  'Interest and tax', dataIndex: 'interest', align    },
-        {   title:  '15% Service Fee', dataIndex: 'service_fee', align    },
         {   title:  'Net Profit', dataIndex: 'profit', align    },
+        {   title:  '50/50 split', dataIndex: 'split', align    },
         {   title:  'Total Tokens', dataIndex: 'total_tokens', align    },
         {   title:  'Token Price', dataIndex: 'token_price', align    },
     ],
@@ -103,8 +103,13 @@ const columns = {
         {   title:  'Total value', dataIndex: 'value', align    }, 
         {   title:  'Dividend per token', dataIndex: 'dividend_token', align    },
         {   title:  'Total amount', dataIndex: 'amount', align    },
+    ],
+    USER_ADD_FUND_HISTORY: [
+        {   title:  'Date', dataIndex: 'date', align    },
+        {   title:  'User ID', dataIndex: 'user_id', align    },
+        {   title:  'Razorpay ID', dataIndex: 'razorpay_id', align    }, 
+        {   title:  'Total amount', dataIndex: 'amount', align    },
     ]
-
 }
 
 export default columns

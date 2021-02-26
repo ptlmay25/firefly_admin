@@ -1,3 +1,4 @@
 export {
-    authStart 
+    authStart,
+    authEnd
 } from './auth'

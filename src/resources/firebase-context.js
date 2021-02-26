@@ -7,6 +7,7 @@ const firebaseConfig = {
   messagingSenderId: "964700755501",
 };
 
-export default !firebase.apps.length
-  ? { FireBaseContext : firebase.initializeApp(firebaseConfig).firestore(), Token: localStorage.getItem('token') }
-  : { FireBaseContext : firebase.app().firestore(), Token: localStorage.getItem('token') }
+export default 
+  !firebase.apps.length
+    ? { FireBaseContext : firebase.initializeApp(firebaseConfig).firestore(), Token: localStorage.getItem('token') }
+    : { FireBaseContext : firebase.app().firestore(), Token: localStorage.getItem('token') }

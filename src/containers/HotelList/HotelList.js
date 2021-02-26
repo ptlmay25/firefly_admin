@@ -11,7 +11,9 @@ import { showErrorModal } from '../../resources/Utilities'
 const HotelList = (props) => {
 
     const [ hotelData, setHotelData ] = useState([])
+    // eslint-disable-next-line
     const [ dataSource, setDataSource ] = useState([])
+    // eslint-disable-next-line
     const { isLoading, sendRequest } = useHttpClient()
     
 

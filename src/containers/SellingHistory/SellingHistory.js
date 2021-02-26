@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import NavigationBar from '../../components/Navigation/NavigationBar'
-import { Input, Space } from 'antd'
 
 import classes from './SellingHistory.module.css'
 import CustomTable from '../../components/Shared/CustomTable/CustomTable'
 import columns from '../../resources/TableColumns'
 import Search from '../../components/Shared/Search/Search'
 import { useHttpClient } from '../../resources/http-hook'
-import { showErrorModal } from '../../resources/Utilities'
+import { convertToINR, showErrorModal } from '../../resources/Utilities'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 
 
@@ -26,15 +25,21 @@ const SellingHistory = () => {
                     let totalTokenValue = 0
                     const newData = response.data.map((data) => {
                         tempTokenCount += data.num_of_tokens
-                        totalTokenValue += data.total_price
+                        totalTokenValue += data.num_of_tokens * data.token_price
                         return {
-                            ...data,
                             key: data._id,
-                            createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
+                            sell_id: data._id,
+                            user_acc_num: data.user_id,
+                            status: data.status,
+                            token_price: `₹ ${ convertToINR(data.token_price) }`,
+                            num_of_tokens: data.num_of_tokens,
+                            total_price: `₹ ${ convertToINR(data.num_of_tokens * data.token_price) }`,
+                            date: new Date(data.date).toLocaleDateString('en-IN')
                         }
                     })
+                    console.log(newData)
                     setTokenCount(tempTokenCount)
-                    setTokenValue(totalTokenValue)
+                    setTokenValue(`₹ ${ convertToINR(totalTokenValue) }`)
                     setSellingData(newData)
                     setDataSource(newData)
                 })
@@ -45,7 +50,7 @@ const SellingHistory = () => {
 
     
     const onSearch = e => {
-        setDataSource(sellingData.filter( entry =>  entry.selling_id.includes(e.target.value) ))
+        setDataSource(sellingData.filter( entry =>  entry.sell_id.includes(e.target.value) ))
     }
 
     return (
@@ -62,14 +67,10 @@ const SellingHistory = () => {
                 !isLoading && sellingData
                 ?   <>
                         <div className={ classes.InfoContainer }>
-                            <p><Space size="middle"> <u>Total Number of Tokens Sold: </u> { tokenCount }</Space></p>
+                            <h6> Total Number of Tokens Sold :- &nbsp; <span style={{ fontSize: '20px' }}>{ tokenCount }</span> </h6>
+                            <h6> Total Sell Value :- &nbsp; <span style={{ fontSize: '20px' }}>{ tokenValue }</span> </h6>
                         </div>
-                        <div className={ classes.InfoContainer1 }>
-                            <Space size="middle"> 
-                                <u>Total Sell value: </u> 
-                                <Input size="medium" value={ tokenValue } disabled style={{ width: '100px'}}/>
-                            </Space>
-                        </div>
+                        
                         <div className={ classes.TableContainer }>
                             <div className={classes.Header}>
                                 <h6>Token Sell History</h6>

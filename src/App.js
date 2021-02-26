@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import classes from './App.css';
+import './App.css';
 import LoadingSpinner from './components/Shared/LoadingSpinner/LoadingSpinner';
-import { Suspense } from 'react';
+import { Suspense } from 'react';   // Fallback screen
 
+// Lazy Loading ( Preformance Booster )
 const Auth = React.lazy(() => import('./containers/Auth/Auth'))
 const Dashboard = React.lazy(() => import('./containers/Dashboard/Dashboard'))
 const UserList = React.lazy(() => import('./containers/UserList/UserList'))
@@ -19,12 +20,12 @@ const WithdrawHistory = React.lazy(() => import('./containers/WithdrawHistory/Wi
 const ContactHistory = React.lazy(() => import('./containers/ContactHistory/ContactHistory'))
 const WithdrawRequest = React.lazy(() => import('./containers/WithdrawRequest/WithdrawRequest'))
 const ContactRequest = React.lazy(() => import('./containers/ContactRequest/ContactRequest'))
-
+// Lazy Loading ( Preformance Booster )
 
 class App extends Component {
   render() {
     const fallback = (
-      <div className={classes.Center}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <LoadingSpinner />
       </div>
     )

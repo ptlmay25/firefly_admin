@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Space, Table } from 'antd'
+import { Table } from 'antd'
 
 import NavigationBar from '../../components/Navigation/NavigationBar'
 import Search from '../../components/Shared/Search/Search'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 import classes from './UserList.module.css'
 import columns from '../../resources/TableColumns'
-import { itemRender } from '../../resources/Utilities'
+import { convertToINR, itemRender } from '../../resources/Utilities'
 import { useHttpClient } from '../../resources/http-hook'
 import { showErrorModal } from '../../resources/Utilities'
 
@@ -20,19 +20,12 @@ const UserList = (props) => {
             sendRequest('/user')
                 .then((response) => {
                     const newUsers = response.data.map((user) => {
-                        if(user.firstName) {
-                            return {
-                                ...user,
-                                key: user._id,
-                                name: `${user.firstName} ${user.lastName}`,
-                                createdAt: new Date(user.createdAt).toLocaleDateString('en-IN')
-                            }
-                        } else {
-                            return {
-                                ...user,
-                                key: user._id,
-                                createdAt: new Date(user.createdAt).toLocaleDateString('en-IN')
-                            }
+                        return {
+                            ...user,
+                            key: user._id,
+                            name: user.firstName ? `${user.firstName} ${user.lastName}` : '',
+                            acc_bal: `₹ ${ convertToINR(user.acc_bal) }`,
+                            createdAt: new Date(user.createdAt).toLocaleDateString('en-IN')
                         }
                     })
                     setUsers(newUsers)
@@ -67,7 +60,7 @@ const UserList = (props) => {
                 !isLoading && users 
                     ?   <>
                             <div className={ classes.InfoContainer }>
-                                <Space size="middle"><p> <u>Total Users: </u> { users.length }</p></Space>
+                                <h6> Total Users :- &nbsp; <span style={{ fontSize: '20px' }}>{ users.length }</span> </h6>
                                 <Search placeholder="Search by Name" onSearch={ onSearch }/>
                             </div>
                             <div className={ classes.TableContainer }>

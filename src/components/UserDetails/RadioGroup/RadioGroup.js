@@ -28,6 +28,12 @@ const RadioGroup = (props) => {
                 style={{ marginRight: '15px' }}>
                     Dividend History
             </Radio.Button>
+            <Radio.Button 
+                value="addfund" 
+                onClick={ () => props.setSelectedTable('addfund') }
+                style={{ marginRight: '15px' }}>
+                    Add Fund History
+            </Radio.Button>
         </Radio.Group>
     )
 }

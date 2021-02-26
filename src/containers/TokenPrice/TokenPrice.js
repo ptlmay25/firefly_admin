@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Row, Col, Button, Table } from 'react-bootstrap'
-import { Input } from 'antd'
+import { Input, Modal } from 'antd'
 import firebase from 'firebase'
 import PhoneInput from 'react-phone-input-2'
 import update from 'immutability-helper'
@@ -15,26 +15,29 @@ import columns from '../../resources/TableColumns'
 import Search from '../../components/Shared/Search/Search'
 import "../../resources/firebase-context";
 import { apiContext } from '../../resources/api-context'
-import { showErrorModal } from '../../resources/Utilities'
+import { convertToINR, showErrorModal } from '../../resources/Utilities'
+import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 
 export class TokenPrice extends Component {
 
     state = {
         allowUpdate: false,
+        isModalOpen: false,
         otpSent: false,
         confirmResult: null,
         verificationCode: "",
-        inProgress: false,
-        dividendHistory: null,
+        inProgress: false,  
+        tokenPriceHistory: null,
         dataSource: null,
+        isLoading: true,
         tokenHistory: {
             month_year: moment(),
             upload_date: moment(),
-            price_per_token: 1000,
+            price_per_token: 0,
             total_revenue: 0,
             operating_expenses: 0,
             interest_and_taxes: 0,
-            service_fee: 0,
+            split: 0,
             net_profit: 0,
             total_number_of_tokens: 0,
             divident_per_token: 0,
@@ -42,24 +45,35 @@ export class TokenPrice extends Component {
         },
     }
 
-    componentDidMount() {
-        axios({ method: 'get', url: apiContext.baseURL + '/dividendHistory' })
-        .then((response) => {
-            if(response.data.length > 0) {
-                const newData = response.data.map((element) => {
+    componentDidMount = async () => {
+        try {            
+            const tokenInfo = this.state.tokenHistory
+            tokenInfo.price_per_token = await (await axios.get(apiContext.baseURL + '/token/getLatestTokenPrice')).data.data.token_price
+            tokenInfo.total_number_of_tokens = await (await axios.get(apiContext.baseURL + '/token/getNumberOfTokens')).data.data
+
+            const tokenHistoryData = await axios.get(apiContext.baseURL + '/token')
+
+            let tokenHistoryDataCopy = null
+            if(tokenHistoryData.length > 0) {
+                tokenHistoryDataCopy = tokenHistoryData.map((element) => {
                     return {
                         ...element,
                         key: element._id,
                         createdAt: new Date(element.createdAt).toLocaleDateString('en-IN'),
                     }
                 })
-                this.setState({
-                    dividendHistory: newData,
-                    dataSource: newData
-                })
             }
-        })
-        .catch((error) => showErrorModal(error.message))
+            
+            this.setState({
+                isLoading: false,
+                tokenHistory: tokenInfo,
+                tokenPriceHistory: tokenHistoryDataCopy,
+                dataSource: tokenHistoryDataCopy
+            })
+        }
+        catch(error) {
+            showErrorModal(error.message)
+        }
     }
 
     onSearch = e => {
@@ -118,18 +132,18 @@ export class TokenPrice extends Component {
     onFormSubmit = (event) => {
         event.preventDefault()
         const tokenHistory = this.state.tokenHistory
-        tokenHistory.divident_per_token = tokenHistory.net_profit / tokenHistory.total_number_of_tokens
+        tokenHistory.divident_per_token = tokenHistory.split / tokenHistory.total_number_of_tokens
         tokenHistory.new_token_price = tokenHistory.divident_per_token + tokenHistory.price_per_token
         this.setState({ tokenHistory: tokenHistory })
 
-        axios.post(apiContext.baseURL + '/token/add', { tokenHistory })
-        .then((response) => {
-            this.setState({ allowUpdate: response.data.status === 'success' })
-        })
-        .catch((error) => {
-            showErrorModal(error.message)
-            throw error
-        })
+        axios.post(apiContext.baseURL + '/token/create', { tokenHistory })
+            .then((response) => {
+                this.setState({ allowUpdate: response.data.status === 'success' })
+            })
+            .catch((error) => {
+                showErrorModal(error.message)
+                throw error
+            })
     }
 
     onClearHandler = () => {
@@ -156,6 +170,14 @@ export class TokenPrice extends Component {
         this.setState({ tokenHistory: update(this.state.tokenHistory, {[field]: {$set: dateString}}) })
     }
 
+    onTotalTokenChangeHandler = (value) => {
+        this.setState({ price_per_token: update(this.state.tokenHistory, { total_number_of_tokens: { $set: value }})})
+    } 
+
+    onTokenPriceChangeHandler = (value) => {
+        this.setState({ price_per_token: update(this.state.tokenHistory, { price_per_token: { $set: value }})})
+    }
+
     onChangeHandler = (value, field, updateProfit=false) => {
         if(field === 'total_revenue') {
             const { interest_and_taxes, operating_expenses } = this.state.tokenHistory
@@ -163,8 +185,8 @@ export class TokenPrice extends Component {
             
             if(!isNaN(value)){
                 tokenHistoryCopy.total_revenue = value
-                tokenHistoryCopy.service_fee = value * 0.15
-                tokenHistoryCopy.net_profit = value * 0.85 - interest_and_taxes - operating_expenses
+                tokenHistoryCopy.net_profit = value - interest_and_taxes - operating_expenses
+                tokenHistoryCopy.split = tokenHistoryCopy.net_profit/2
             }
             this.setState({ tokenHistory: tokenHistoryCopy })
         } else if(field === 'total_no_of_tokens') {
@@ -181,6 +203,7 @@ export class TokenPrice extends Component {
             if(!isNaN(value)) {
                 tokenHistoryCopy[field] = value
                 tokenHistoryCopy.net_profit = net_profit + (this.state.tokenHistory[field] - value) 
+                tokenHistoryCopy.split = tokenHistoryCopy.net_profit/2
             }
 
             this.setState({ tokenHistory: tokenHistoryCopy })
@@ -193,160 +216,187 @@ export class TokenPrice extends Component {
 
     render() {
         const { otpSent, allowUpdate, verificationCode, dataSource, inProgress, phone, tokenHistory } = this.state
-        const { price_per_token, month_year, upload_date, total_revenue, operating_expenses, interest_and_taxes, service_fee, net_profit, total_number_of_tokens, divident_per_token, new_token_price } = tokenHistory
+        const { price_per_token, month_year, upload_date, total_revenue, operating_expenses, interest_and_taxes, split, net_profit, total_number_of_tokens, divident_per_token, new_token_price } = tokenHistory
         const date = new Date().toLocaleDateString('EN-IN')
         return (
             <>
                 <NavigationBar />
-                <div className={ classes.FormContainer }>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingRight: '140px' }}>
-                        <h6><u>Token Price Calculation</u></h6>
-                        <Button variant="danger" style={{ width: '150px' }} onClick={() => this.onClearHandler()}>Clear All</Button>
-                    </div>
-                    <Container fluid style={{ marginTop: '40px' }}>
-                        <form onSubmit={(e) => this.onFormSubmit(e)}>
-                            <Row>
-                                <Col md={5}>
-                                    <InputDiv 
-                                        label="Price per token" 
-                                        type="number" 
-                                        value={ price_per_token } 
-                                        disabled/>
-
-                                    <InputDiv 
-                                        label="Month + Year" 
-                                        type="month" 
-                                        value={ month_year } 
-                                        onChange={(data, dateString) => this.onChangeDateHandler(data, dateString, 'month_year')}
-                                        required
-                                        disabled={ allowUpdate }/>
-                                    
-                                    <InputDiv 
-                                        label="Date" 
-                                        type="date" 
-                                        value={ upload_date } 
-                                        onChange={(data, dateString) => this.onChangeDateHandler(data, dateString, 'upload_date')} 
-                                        required
-                                        disabled={ allowUpdate }/>
-
-                                    <InputDiv 
-                                        label="Total Revenue" 
-                                        type="number" 
-                                        value={ total_revenue === 0 ? '' : total_revenue } 
-                                        onChange={(value) => this.onChangeHandler(value, 'total_revenue')}
-                                        required
-                                        disabled={ allowUpdate } />
-
-                                    <InputDiv 
-                                        label="Operating Expenses" 
-                                        type="number" 
-                                        value={ operating_expenses === 0 ? '' : operating_expenses  } 
-                                        onChange={(value) => this.onChangeHandler(value, 'operating_expenses', true)} 
-                                        required
-                                        disabled={ allowUpdate }/>
-
-                                    <InputDiv 
-                                        label="Interest and tax" 
-                                        type="number" 
-                                        value={ interest_and_taxes === 0 ? '' : interest_and_taxes  }
-                                        onChange={(value) => this.onChangeHandler(value, 'interest_and_taxes', true)} 
-                                        required
-                                        disabled={ allowUpdate } />
-
-                                    <InputDiv 
-                                        label="15% Service fee" 
-                                        type="number" 
-                                        value={ service_fee === 0 ? '' : service_fee  }
-                                        disabled />
-                                </Col>
-                                <Col md={1}></Col>
-                                <Col md={5}>
-                                    <InputDiv 
-                                        label="Net Profit" 
-                                        type="number" 
-                                        value={ net_profit === 0 ? '' : net_profit  }
-                                        disabled />
-
-                                    <InputDiv 
-                                        label="Total Outstanding tokens" 
-                                        type="number" 
-                                        value={ total_number_of_tokens === 0 ? '' : total_number_of_tokens  }
-                                        onChange={(value) => this.onChangeHandler(value, 'total_number_of_tokens')} 
-                                        required
-                                        disabled={ allowUpdate } />
-                                    
-                                    <div style={{ padding: '80px 50px 0' }}>
-                                        <Table borderless size="sm">
-                                            <tbody>
-                                                <tr>
-                                                    <td colSpan={2} style={{ fontWeight: '500' }}>Today's Dividend per token: </td>
-                                                    <td colSpan={2} style={{ fontWeight: '500' }}>{ divident_per_token === 0 ? '' : divident_per_token }</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style={{ fontWeight: '500' }}>New Token Price: </td>
-                                                    <td style={{ fontWeight: '500' }}>{ new_token_price === 0 ? '' : new_token_price }</td>
-                                                    <td style={{ fontWeight: '500' }}>Date: </td>
-                                                    <td style={{ fontWeight: '500' }}>{date}</td>
-                                                </tr>
-                                            </tbody>
-                                        </Table>
+                {
+                    this.state.isLoading 
+                        ?   <div className={ classes.Center }>
+                                <LoadingSpinner />
+                            </div>
+                        :   
+                            <>
+                                <div className={ classes.FormContainer }>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingRight: '140px' }}>
+                                        <h6><u>Token Price Calculation</u></h6>
+                                        <Button variant="danger" style={{ width: '150px' }} onClick={() => this.onClearHandler()}>Clear All</Button>
                                     </div>
-                                    <div style={{ padding: '20px 70px' }} className={ classes.ButtonDiv }>
-                                        <Button variant="primary" style={{ width: '150px' }} type="submit">Calculate</Button>
-                                        <Button variant="secondary" style={{ width: '150px' }} disabled={ !allowUpdate }><a href="#login">Update</a></Button>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </form>
-                    </Container>
-                </div>
-                <div className={ classes.TableContainer }>
-                    <div className={classes.Header}>
-                        <h6>Token Price History</h6>
-                        <Search placeholder="Search By Date" onSearch={ this.onSearch } className={ classes.Search }/>
-                    </div>
-                    <CustomTable columns={ columns.TOKEN_PRICE_HISTORY } data={ dataSource } />
-                </div>
+                                    <Container fluid style={{ marginTop: '40px' }}>
+                                        <form onSubmit={(e) => this.onFormSubmit(e)}>
+                                            <Row>
+                                                <Col md={5}>
+                                                    <InputDiv 
+                                                        label="Price per token" 
+                                                        type="number" 
+                                                        onChange={(value) => this.onTokenPriceChangeHandler(value)}
+                                                        value={ price_per_token } 
+                                                        disabled/>
                 
-                <Container as="div" id="login" className={ classes.LoginContainer }>
-                    <h6>Confirm your ID to update Token price</h6>
-                    <PhoneInput 
-                        placeholder="Admin Phone Number" 
-                        country='in'
-                        value={ phone }
-                        required={ true }
-                        autoFocus={ true }
-                        onChange={ (p) => this.setState({ phone: p }) }
-                        disabled={ inProgress } 
-                        className={ classes.Input } 
-                        style={{ width: '350px', marginTop: '40px' }}
-                    />
-                    {
-                        !otpSent 
-                            ?   <Button 
-                                    className={ classes.OTP }
-                                    onClick={(event) => this.sendOtp(event)}
-                                    disabled={ !allowUpdate }>
-                                        Get OTP
-                                </Button> 
-                            :   <>
-                                    <Input.Password
-                                        value={ verificationCode }
-                                        onChange={ (e) => this.setState({ verificationCode: e.target.value }) } 
-                                        placeholder="OTP" 
-                                        maxLength={6}
-                                        style={{ width: '350px', marginTop: '15px' }} />
-                                    <div>
-                                        <Button 
-                                            className={ classes.LoginButton }
-                                            onClick={(event) => this.verifyOtp(event)}>
-                                                Update
-                                        </Button>
-                                        <Button variant="danger" className={ classes.LoginButton }>Cancel</Button>    
-                                    </div>  
-                                </>
-                    }
-                </Container>
+                                                    <InputDiv 
+                                                        label="Month + Year" 
+                                                        type="month" 
+                                                        value={ month_year } 
+                                                        onChange={(data, dateString) => this.onChangeDateHandler(data, dateString, 'month_year')}
+                                                        required
+                                                        disabled={ allowUpdate }/>
+                                                    
+                                                    <InputDiv 
+                                                        label="Date" 
+                                                        type="date" 
+                                                        value={ upload_date } 
+                                                        onChange={(data, dateString) => this.onChangeDateHandler(data, dateString, 'upload_date')} 
+                                                        required
+                                                        disabled={ allowUpdate }/>
+                
+                                                    <InputDiv 
+                                                        label="Total Revenue" 
+                                                        type="number" 
+                                                        value={ total_revenue === 0 ? '' : total_revenue } 
+                                                        onChange={(value) => this.onChangeHandler(value, 'total_revenue')}
+                                                        required
+                                                        disabled={ allowUpdate } />
+                
+                                                    <InputDiv 
+                                                        label="Operating Expenses" 
+                                                        type="number" 
+                                                        value={ operating_expenses === 0 ? '' : operating_expenses  } 
+                                                        onChange={(value) => this.onChangeHandler(value, 'operating_expenses', true)} 
+                                                        required
+                                                        disabled={ allowUpdate }/>
+                
+                                                    <InputDiv 
+                                                        label="Interest and tax" 
+                                                        type="number" 
+                                                        value={ interest_and_taxes === 0 ? '' : interest_and_taxes  }
+                                                        onChange={(value) => this.onChangeHandler(value, 'interest_and_taxes', true)} 
+                                                        required
+                                                        disabled={ allowUpdate } />
+                
+                                                    <InputDiv 
+                                                        label="Net Profit" 
+                                                        type="number" 
+                                                        value={ net_profit === 0 ? '' : net_profit  }
+                                                        disabled />
+                                                </Col>
+                                                <Col md={1}></Col>
+                                                <Col md={5}>
+                                                    <InputDiv 
+                                                        label="50/50 split" 
+                                                        type="number" 
+                                                        value={ split === 0 ? '' : split  }
+                                                        disabled />
+                
+                                                    <InputDiv 
+                                                        label="Total Outstanding tokens" 
+                                                        type="number" 
+                                                        value={ total_number_of_tokens === 0 ? '' : total_number_of_tokens  }
+                                                        onChange={(value) => this.onTotalTokenChangeHandler(value)}
+                                                        disabled />
+                                                    
+                                                    <div style={{ padding: '80px 50px 0' }}>
+                                                        <Table borderless size="sm">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colSpan={2} style={{ fontWeight: '500' }}>Today's Dividend per token: </td>
+                                                                    <td colSpan={2} style={{ fontWeight: '500' }}>{ divident_per_token === 0 ? '' : `${ convertToINR(divident_per_token ) }` }</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style={{ fontWeight: '500' }}>New Token Price: </td>
+                                                                    <td style={{ fontWeight: '500' }}>{ new_token_price === 0 ? '' : `${ convertToINR(new_token_price) }` }</td>
+                                                                    <td style={{ fontWeight: '500' }}>Date: </td>
+                                                                    <td style={{ fontWeight: '500' }}>{date}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </Table>
+                                                    </div>
+                                                    <div style={{ padding: '20px 70px' }} className={ classes.ButtonDiv }>
+                                                        <Button variant="primary" style={{ width: '150px' }} type="submit">Calculate</Button>
+                                                        <Button variant="secondary" style={{ width: '150px' }} disabled={ !allowUpdate } onClick={() => this.setState({ isModalOpen: true })}>
+                                                            Update
+                                                        </Button>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        </form>
+                                    </Container>
+                                </div>
+                                <div className={ classes.TableContainer }>
+                                    <div className={classes.Header}>
+                                        <h6>Token Price History</h6>
+                                        <Search placeholder="Search By Date" onSearch={ this.onSearch } className={ classes.Search }/>
+                                    </div>
+                                    <CustomTable columns={ columns.TOKEN_PRICE_HISTORY } data={ dataSource } />
+                                </div>
+                            </>
+                }
+                
+                
+                <Modal
+                    visible={ this.state.isModalOpen }
+                    footer={ null }
+                    className={ classes.Modal }
+                    destroyOnClose
+                    centered
+                    onCancel={ () => this.setState({ isModalOpen: false }) }
+                    >
+                        <div className={ classes.LoginContainer }>
+                            <h6>Confirm your ID to update Token price</h6>
+                            <PhoneInput 
+                                placeholder="Admin Phone Number" 
+                                country='in'
+                                value={ phone }
+                                required={ true }
+                                autoFocus={ true }
+                                onChange={ (p) => this.setState({ phone: p }) }
+                                disabled={ inProgress } 
+                                className={ classes.Input } 
+                                style={{ width: '350px', marginTop: '40px' }}
+                            />
+                            {
+                                !otpSent 
+                                    ?   <Button 
+                                            className={ classes.OTP }
+                                            onClick={(event) => this.sendOtp(event)}
+                                            disabled={ !allowUpdate }>
+                                                Get OTP
+                                        </Button> 
+                                    :   <>
+                                            <Input.Password
+                                                value={ verificationCode }
+                                                onChange={ (e) => this.setState({ verificationCode: e.target.value }) } 
+                                                placeholder="OTP" 
+                                                maxLength={6}
+                                                style={{ width: '350px', marginTop: '15px' }} />
+                                            <div>
+                                                <Button 
+                                                    className={ classes.LoginButton }
+                                                    onClick={(event) => this.verifyOtp(event)}>
+                                                        Update
+                                                </Button>
+                                                <Button 
+                                                    variant="danger" 
+                                                    className={ classes.LoginButton } 
+                                                    onClick={() => this.setState({ isModalOpen: false})}>
+                                                        Cancel
+                                                </Button>    
+                                            </div>  
+                                        </>
+                            }
+                        </div>
+                </Modal>
+                
                 <div ref={ref => this.recaptchaWrapperRef = ref}>
                       <div id="recaptcha-container"></div>
                 </div>
