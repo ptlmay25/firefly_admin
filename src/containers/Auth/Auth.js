@@ -19,6 +19,12 @@ class Auth extends Component {
       inProgress: false
     }
 
+    componentDidMount = () => {
+      if(sessionStorage.getItem('token')) {
+        this.props.history.push('./dash')
+      }
+    }
+
     // To create a new Captcha for OTP verification
     captchaInit = () => {
       if (this.applicationVerifier && this.recaptchaWrapperRef) {
@@ -67,7 +73,7 @@ class Auth extends Component {
           .then(user => {
             this.setState({ OTPSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false });    
             this.props.onAuthStart()
-            localStorage.setItem('token', true)
+            sessionStorage.setItem('token', true)
             this.props.history.push('/dash')
           })
           .catch(error => {
@@ -110,7 +116,7 @@ class Auth extends Component {
                                         onChange={ (e) => this.setState({ verificationCode: e.target.value }) }                            
                                         placeholder="Enter OTP"
                                         maxLength={6}
-                                        style={{ marginTop: '20px' }}/>
+                                        style={{ marginTop: '20px', marginLeft: '10px' ,width: '300px' }}/>
                                 </Space>
 
                                 <Button 

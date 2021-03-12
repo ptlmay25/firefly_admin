@@ -16,7 +16,7 @@ const ContactHistory = () => {
 
     useEffect(() => {
         const fetchData = () => {
-            sendRequest('/contactHistory')
+            sendRequest('/contact/history')
                 .then((response) => {
                     const newData = response.data.map((data) => {
                         return {

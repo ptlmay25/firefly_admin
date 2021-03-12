@@ -10,10 +10,12 @@ import { Suspense } from 'react';   // Fallback screen
 const Auth = React.lazy(() => import('./containers/Auth/Auth'))
 const Dashboard = React.lazy(() => import('./containers/Dashboard/Dashboard'))
 const UserList = React.lazy(() => import('./containers/UserList/UserList'))
+const PartnerList = React.lazy(() => import('./containers/PartnerList/PartnerList'))
 const UserDetails = React.lazy(() => import('./containers/UserDetails/UserDetails'))
 const TokenPrice = React.lazy(() => import('./containers/TokenPrice/TokenPrice'))
-const HotelList = React.lazy(() => import('./containers/HotelList/HotelList'))
-const HotelEntryForm = React.lazy(() => import('./containers/HotelList/HotelEntryForm/HotelEntryForm'))
+const BusinessList = React.lazy(() => import('./containers/HotelList/BusinessList'))
+const BusinessEntryForm = React.lazy(() => import('./containers/HotelList/BusinessEntryForm/BusinessEntryForm'))
+const PartnerEntryForm = React.lazy(() => import('./containers/PartnerList/PartnerEntryForm/PartnerEntryForm'))
 const PurchaseHistory = React.lazy(() => import('./containers/PurchaseHistory/PurchaseHistory'))
 const SellingHistory = React.lazy(() => import('./containers/SellingHistory/SellingHistory'))
 const WithdrawHistory = React.lazy(() => import('./containers/WithdrawHistory/WithdrawHistory'))
@@ -23,6 +25,7 @@ const ContactRequest = React.lazy(() => import('./containers/ContactRequest/Cont
 // Lazy Loading ( Preformance Booster )
 
 class App extends Component {
+
   render() {
     const fallback = (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -35,6 +38,7 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={ Auth } />
           <Route path="/users" exact component={ UserList } />
+          <Route path="/partners" exact component={ PartnerList } />
           <Route path="/users/:uid" component={ UserDetails } />
           <Route path="/purchase-history" component={ PurchaseHistory } />
           <Route path="/selling-history" component={ SellingHistory } />
@@ -43,8 +47,9 @@ class App extends Component {
           <Route path="/withdraw-request" component={ WithdrawRequest } />
           <Route path="/contact-request" component={ ContactRequest } />
           <Route path="/contact-history" component={ ContactHistory } />
-          <Route path="/hotels" exact component={ HotelList } />
-          <Route path="/hotels/add" component={ HotelEntryForm } />
+          <Route path="/business" exact component={ BusinessList } />
+          <Route path="/business/add" component={ BusinessEntryForm } />
+          <Route path="/partners/add" component={ PartnerEntryForm } />
           <Route path="/dash" component={ Dashboard } />
           <Redirect to="/dash" />
         </Switch>

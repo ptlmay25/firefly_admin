@@ -8,8 +8,8 @@
 
 .Modal {
     height: fit-content;
-    border-radius: 10px !important;
-    background-color: #fafafa;
+    /* border-radius: 10px !important; */
+    /* background-color: #fafafa; */
 }
 
 .LoginContainer {

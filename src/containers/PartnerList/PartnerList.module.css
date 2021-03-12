@@ -1,14 +1,27 @@
 .InfoContainer{
     margin-top: 80px;
     padding: 20px 80px;
-    font-size: 16px;
-    display: flex;
-    justify-content: space-between;
 }
 
-.InfoContainer h6 {
+.InfoContainer1 {
+    display: flex;
+}
+
+.InfoContainer2 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.InfoContainer2 h6 {
     border-bottom: 1px solid black;
     padding: 5px;
+}
+
+.Button {
+    margin-left: 30px;
+    margin-top: -25px;
+    min-width: 150px;
 }
 
 .Search {

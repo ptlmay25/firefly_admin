@@ -1,0 +1,39 @@
+.FormContainer{
+    padding-top: 50px;
+    padding-bottom: 80px;
+}
+
+.Button {
+    margin-top: -10px;
+}
+
+.ButtonContainer {
+    margin-top: 60px;
+    text-align: right;
+}
+
+:global .react-tel-input .form-control{
+    width: 415px !important;
+}
+
+.Form {
+    margin-top: 30px;
+}
+
+.CityDiv {
+    width: 48%;
+}
+
+.StateDiv {
+    width: 48%;
+    margin-left: 10px;
+}
+
+.State { 
+    width: 205px;
+}
+
+:global .btn-primary{
+    background-color: #424770 !important;
+    border-color: #424770 !important;
+}

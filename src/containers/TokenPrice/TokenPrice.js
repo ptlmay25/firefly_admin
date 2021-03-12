@@ -18,6 +18,8 @@ import { apiContext } from '../../resources/api-context'
 import { convertToINR, showErrorModal } from '../../resources/Utilities'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 
+const MONTHS = [ 'Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+
 export class TokenPrice extends Component {
 
     state = {
@@ -37,38 +39,68 @@ export class TokenPrice extends Component {
             total_revenue: 0,
             operating_expenses: 0,
             interest_and_taxes: 0,
-            split: 0,
+            split_50_50: 0,
             net_profit: 0,
             total_number_of_tokens: 0,
-            divident_per_token: 0,
+            dividend_per_token: 0,
             new_token_price: 0,
         },
+    }
+
+    getTokenPrice = async () => {
+        try {
+            return await (await axios.get(apiContext.baseURL + '/token/getLatestTokenPrice')).data.data.token_price
+        } catch(error) {
+            showErrorModal(error.message)
+        }
+    }
+
+    getNumberOfTokens = async () => {
+        try {
+            return await (await axios.get(apiContext.baseURL + '/token/getNumberOfTokens')).data.data
+        } catch (error) {
+            showErrorModal(error.message)
+        }
+    }
+
+    getTokenHistory = async () => {
+        try {
+            const tokenHistoryData = await (await axios.get(apiContext.baseURL + '/token')).data.data
+        
+            return tokenHistoryData.map((element) => {
+                const date = new Date(element.upload_date)
+                return {
+                    key: element._id,
+                    total_revenue: `₹ ${ convertToINR(element.total_revenue )}`,
+                    operating_expenses: `₹ ${ convertToINR(element.operating_expenses )}`,
+                    interest_and_taxes: `₹ ${ convertToINR(element.interest_and_taxes )}`,
+                    net_profit: `₹ ${ convertToINR(element.net_profit )}`,
+                    split_50_50: `₹ ${ convertToINR(element.split_50_50 )}`,
+                    total_number_of_tokens: element.total_number_of_tokens,
+                    dividend_per_token: `₹ ${ convertToINR(element.dividend_per_token )}`,
+                    token_price: `₹ ${ convertToINR(element.token_price )}`,
+                    upload_date: new Date(element.upload_date).toLocaleDateString('en-IN'),
+                    month: `${ MONTHS[ date.getMonth()] } ${ date.getFullYear() }`
+                }
+            })
+        } catch (error) {
+            showErrorModal(error.message)
+        }
     }
 
     componentDidMount = async () => {
         try {            
             const tokenInfo = this.state.tokenHistory
-            tokenInfo.price_per_token = await (await axios.get(apiContext.baseURL + '/token/getLatestTokenPrice')).data.data.token_price
-            tokenInfo.total_number_of_tokens = await (await axios.get(apiContext.baseURL + '/token/getNumberOfTokens')).data.data
 
-            const tokenHistoryData = await axios.get(apiContext.baseURL + '/token')
+            const tokenHistoryData = await this.getTokenHistory()
+            tokenInfo.price_per_token = await this.getTokenPrice()
+            tokenInfo.total_number_of_tokens = await this.getNumberOfTokens()
 
-            let tokenHistoryDataCopy = null
-            if(tokenHistoryData.length > 0) {
-                tokenHistoryDataCopy = tokenHistoryData.map((element) => {
-                    return {
-                        ...element,
-                        key: element._id,
-                        createdAt: new Date(element.createdAt).toLocaleDateString('en-IN'),
-                    }
-                })
-            }
-            
             this.setState({
                 isLoading: false,
                 tokenHistory: tokenInfo,
-                tokenPriceHistory: tokenHistoryDataCopy,
-                dataSource: tokenHistoryDataCopy
+                tokenPriceHistory: tokenHistoryData,
+                dataSource: tokenHistoryData
             })
         }
         catch(error) {
@@ -77,7 +109,7 @@ export class TokenPrice extends Component {
     }
 
     onSearch = e => {
-        this.setState({ dataSource: this.state.dividendHistory.filter((entry) =>  entry.date.includes(e.target.value))})
+        this.setState({ dataSource: this.state.tokenPriceHistory.filter((entry) =>  entry.upload_date.includes(e.target.value))})
     }
 
     captchaInit = () => {
@@ -118,8 +150,25 @@ export class TokenPrice extends Component {
           confirmResult
             .confirm(verificationCode)
             .then(user => {
-              this.setState({ otpSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false });    
-            // Send update request here
+                this.setState({ otpSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false });    
+                axios.post(apiContext.baseURL + '/token/create', { data: { ...this.state.tokenHistory }})
+                    .then((response) => {
+                        this.onClearHandler()
+                        // alert(response.data.message)
+                        // const tokenPriceHistory = this.getTokenHistory()
+                        this.setState({ 
+                            isModalOpen: false,
+                            // tokenPriceHistory: tokenPriceHistory,
+                            // dataSource: tokenPriceHistory,
+                            // tokenHistory: update(this.state.tokenHistory, { price_per_token: { $set: this.getTokenPrice() }})  
+                        })
+                        window.location.reload()
+                    })
+                    .catch((error) => {
+                        this.setState({ isModalOpen: false })
+                        showErrorModal(error.message)
+                        throw error
+                    })
             })
             .catch(error => {
               alert(error.message)
@@ -132,32 +181,27 @@ export class TokenPrice extends Component {
     onFormSubmit = (event) => {
         event.preventDefault()
         const tokenHistory = this.state.tokenHistory
-        tokenHistory.divident_per_token = tokenHistory.split / tokenHistory.total_number_of_tokens
-        tokenHistory.new_token_price = tokenHistory.divident_per_token + tokenHistory.price_per_token
-        this.setState({ tokenHistory: tokenHistory })
-
-        axios.post(apiContext.baseURL + '/token/create', { tokenHistory })
-            .then((response) => {
-                this.setState({ allowUpdate: response.data.status === 'success' })
-            })
-            .catch((error) => {
-                showErrorModal(error.message)
-                throw error
-            })
+        tokenHistory.dividend_per_token = tokenHistory.split_50_50 / tokenHistory.total_number_of_tokens
+        tokenHistory.new_token_price = tokenHistory.dividend_per_token + tokenHistory.price_per_token
+        
+        let date = tokenHistory.upload_date.toString()
+        tokenHistory.upload_date = `${date.substring(3,5)}/${date.substring(0,2)}/${date.substring(6,)}`
+    
+        this.setState({ tokenHistory: tokenHistory, allowUpdate: true })
     }
 
-    onClearHandler = () => {
+    onClearHandler = async () => {
         const tokenHistoryCopy = {
             month_year: moment(),
             upload_date: moment(),
-            price_per_token: 1000,
+            price_per_token: await this.getTokenPrice(),
             total_revenue: 0,
             operating_expenses: 0,
             interest_and_taxes: 0,
-            service_fee: 0,
             net_profit: 0,
-            total_number_of_tokens: 0,
-            divident_per_token: 0,
+            split_50_50: 0,
+            total_number_of_tokens: await this.getNumberOfTokens(),
+            dividend_per_token: 0,
             new_token_price: 0,
         }
         this.setState({ 
@@ -167,7 +211,7 @@ export class TokenPrice extends Component {
     }
 
     onChangeDateHandler = (date, dateString, field) => {
-        this.setState({ tokenHistory: update(this.state.tokenHistory, {[field]: {$set: dateString}}) })
+        this.setState({ tokenHistory: update(this.state.tokenHistory, {[field]: { $set: dateString }}) })
     }
 
     onTotalTokenChangeHandler = (value) => {
@@ -186,7 +230,7 @@ export class TokenPrice extends Component {
             if(!isNaN(value)){
                 tokenHistoryCopy.total_revenue = value
                 tokenHistoryCopy.net_profit = value - interest_and_taxes - operating_expenses
-                tokenHistoryCopy.split = tokenHistoryCopy.net_profit/2
+                tokenHistoryCopy.split_50_50 = tokenHistoryCopy.net_profit/2
             }
             this.setState({ tokenHistory: tokenHistoryCopy })
         } else if(field === 'total_no_of_tokens') {
@@ -203,7 +247,7 @@ export class TokenPrice extends Component {
             if(!isNaN(value)) {
                 tokenHistoryCopy[field] = value
                 tokenHistoryCopy.net_profit = net_profit + (this.state.tokenHistory[field] - value) 
-                tokenHistoryCopy.split = tokenHistoryCopy.net_profit/2
+                tokenHistoryCopy.split_50_50 = tokenHistoryCopy.net_profit/2
             }
 
             this.setState({ tokenHistory: tokenHistoryCopy })
@@ -216,7 +260,7 @@ export class TokenPrice extends Component {
 
     render() {
         const { otpSent, allowUpdate, verificationCode, dataSource, inProgress, phone, tokenHistory } = this.state
-        const { price_per_token, month_year, upload_date, total_revenue, operating_expenses, interest_and_taxes, split, net_profit, total_number_of_tokens, divident_per_token, new_token_price } = tokenHistory
+        const { price_per_token, month_year, upload_date, total_revenue, operating_expenses, interest_and_taxes, split_50_50, net_profit, total_number_of_tokens, dividend_per_token, new_token_price } = tokenHistory
         const date = new Date().toLocaleDateString('EN-IN')
         return (
             <>
@@ -293,9 +337,9 @@ export class TokenPrice extends Component {
                                                 <Col md={1}></Col>
                                                 <Col md={5}>
                                                     <InputDiv 
-                                                        label="50/50 split" 
+                                                        label="50/50 Split" 
                                                         type="number" 
-                                                        value={ split === 0 ? '' : split  }
+                                                        value={ split_50_50 === 0 ? '' : split_50_50  }
                                                         disabled />
                 
                                                     <InputDiv 
@@ -310,7 +354,7 @@ export class TokenPrice extends Component {
                                                             <tbody>
                                                                 <tr>
                                                                     <td colSpan={2} style={{ fontWeight: '500' }}>Today's Dividend per token: </td>
-                                                                    <td colSpan={2} style={{ fontWeight: '500' }}>{ divident_per_token === 0 ? '' : `${ convertToINR(divident_per_token ) }` }</td>
+                                                                    <td colSpan={2} style={{ fontWeight: '500' }}>{ dividend_per_token === 0 ? '' : `${ convertToINR(dividend_per_token ) }` }</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td style={{ fontWeight: '500' }}>New Token Price: </td>
@@ -364,6 +408,7 @@ export class TokenPrice extends Component {
                                 className={ classes.Input } 
                                 style={{ width: '350px', marginTop: '40px' }}
                             />
+
                             {
                                 !otpSent 
                                     ?   <Button 
@@ -378,7 +423,7 @@ export class TokenPrice extends Component {
                                                 onChange={ (e) => this.setState({ verificationCode: e.target.value }) } 
                                                 placeholder="OTP" 
                                                 maxLength={6}
-                                                style={{ width: '350px', marginTop: '15px' }} />
+                                                style={{ width: '300px', marginTop: '15px' }} />
                                             <div>
                                                 <Button 
                                                     className={ classes.LoginButton }

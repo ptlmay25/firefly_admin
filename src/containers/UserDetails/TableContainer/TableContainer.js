@@ -6,20 +6,16 @@ import columns from '../../../resources/TableColumns'
 
 import classes from './TableContainer.module.css'
 
-const TableContainer = () => {
-    const withdrawData = null
-    const purchaseData = null 
-    const sellingData = null   
-    const dividendData = null
-    const addfundData = null
+const TableContainer = (props) => {
+    const withdrawData = props.withdrawData
+    const purchaseData = props.purchaseData
+    const sellingData = props.sellData   
 
     const [ selectedTable, setSelectedTable ] = useState('withdraw')
 
     const [ dataSourceWithdraw, setDataSourceWithdraw ] = useState(withdrawData);
     const [ dataSourcePurchase, setDataSourcePurchase ] = useState(purchaseData);
     const [ dataSourceSelling, setDataSourceSelling ] = useState(sellingData);
-    const [ dataSourceDividend, setDataSourceDividend ] = useState(dividendData);
-    const [ dataSourceAddfund, setDataSourceAddfund ] = useState(addfundData);
     
     const onSearchWithdraw = e => {
         setDataSourceWithdraw(withdrawData.filter( entry =>  entry.amount.includes(e.target.value) ))
@@ -29,12 +25,6 @@ const TableContainer = () => {
     }
     const onSearchSelling = e => {
         setDataSourceSelling(sellingData.filter( entry =>  entry.selling_id.includes(e.target.value) ))
-    }
-    const onSearchDividend = e => {
-        setDataSourceDividend(dividendData.filter( entry =>  entry.date.includes(e.target.value) ))
-    }
-    const onSearchAddfund = e => {
-        setDataSourceAddfund(addfundData.filter( entry =>  entry.date.includes(e.target.value) ))
     }
 
     return (
@@ -59,16 +49,6 @@ const TableContainer = () => {
                     { 
                         selectedTable === 'selling' 
                             ?  <TabPanel title="Selling"  columns={ columns.USER_SELLING_HISTORY } data={ dataSourceSelling } placeholder="Search by ID" onSearch={ onSearchSelling }  /> 
-                            :   null 
-                    }  
-                    { 
-                        selectedTable === 'dividend' 
-                            ?  <TabPanel title="Dividend" columns={ columns.USER_DIVIDEND_HISTORY } data={ dataSourceDividend } placeholder="Search by Date" onSearch={ onSearchDividend } /> 
-                            :   null 
-                    }
-                    { 
-                        selectedTable === 'addfund' 
-                            ?  <TabPanel title="Add Fund" columns={ columns.USER_ADD_FUND_HISTORY } data={ dataSourceAddfund } placeholder="Search by Date" onSearch={ onSearchAddfund } /> 
                             :   null 
                     }  
                 </div>

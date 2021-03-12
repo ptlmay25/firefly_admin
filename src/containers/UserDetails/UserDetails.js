@@ -17,27 +17,102 @@ import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinne
 class UserDetails extends Component {
 
     state = {
-        data: {},
+        userData: null,
+        userAccountDetails: {
+            accountBalance: 0,
+            withdrawAmount: 0,
+            profit: 0,
+            tokens: 0
+        },
+        userPurchaseData: null,
+        userSellingData: null,
+        userWithdrawData: null,
         isLoading: true
     }
 
-    componentDidMount() {
-        const id = this.props.location.state
+    componentDidMount = async () => {
+        const userId = this.props.location.state
+        try {
+            const userData = await (await axios.get(apiContext.baseURL + `/user/view/${userId}`)).data.data[0]
+            const userPurchaseData = await (await axios.get(apiContext.baseURL + `/purchase/view/user/${userId}`)).data.data
+            const userSellingData = await (await axios.get(apiContext.baseURL + `/sell/view/user/${userId}`)).data.data
+            const userWithdrawData = await (await axios.get(apiContext.baseURL + `/withdrawRequest/view/user/${userId}`)).data.data
 
-        axios.get(apiContext.baseURL + `/user/view/${id}`)
-            .then((response) => {
-                this.setState({ data: response.data.data[0], isLoading: false })
+            console.log(userWithdrawData)
+
+            const userPurchaseDataCopy = userPurchaseData.map((element) => {
+                return {
+                    date: new Date(element.date).toLocaleDateString('en-IN'),
+                    purchaseId: element._id,
+                    num_of_tokens: element.num_of_tokens,
+                    token_price: `₹ ${ convertToINR(element.token_price) }`,
+                    total_amount: `₹ ${ convertToINR(element.token_price * element.num_of_tokens) }`,
+                    status: element.status
+                }
             })
-            .catch((error) => {
-                this.setState({ isLoading: false })
-                showErrorModal(error.message)
+
+            const userSellingDataCopy = userSellingData.map((element) => {
+                return {
+                    date: new Date(element.date).toLocaleDateString('en-IN'),
+                    sellingId: element._id,
+                    num_of_tokens: element.num_of_tokens,
+                    token_price: `₹ ${ convertToINR(element.token_price) }`,
+                    total_amount: `₹ ${ convertToINR(element.token_price * element.num_of_tokens) }`,
+                    status: element.status
+                }
             })
+
+            const userWithdrawDataCopy = userWithdrawData.map((element) => {
+                return {
+                    ...element,
+                    date: new Date(element.createdAt).toLocaleDateString('en-IN'),
+                    total_amount: `₹ ${ convertToINR(element.total_amount) }`,
+                }
+            }) 
+
+            const userAccountDetailsCopy = this.state.userAccountDetails
+
+            userWithdrawData.forEach(element => {
+                userAccountDetailsCopy.withdrawAmount += element.total_amount
+            })
+
+            let totalTokenPurchased = 0
+            let totalPurchaseAmount = 0
+            userPurchaseData.forEach(element => {
+                totalTokenPurchased += element.num_of_tokens
+                totalPurchaseAmount += element.token_price * element.num_of_tokens
+            })
+
+            let totalTokenSold = 0
+            userSellingData.forEach(element => {
+                totalTokenSold += element.num_of_tokens
+            })
+
+            const token_price = await( await axios.get(apiContext.baseURL + `/token/getLatestTokenPrice`)).data.data.token_price
+            userAccountDetailsCopy.profit = (token_price - (totalPurchaseAmount/totalTokenPurchased)) * totalTokenSold
+            userAccountDetailsCopy.tokens = totalTokenPurchased - totalTokenSold
+            userAccountDetailsCopy.accountBalance = userData.acc_bal ? userData.acc_bal : 0
+
+            this.setState({
+                userData, 
+                userPurchaseData: userPurchaseDataCopy, 
+                userSellingData: userSellingDataCopy, 
+                userWithdrawData: userWithdrawDataCopy,
+                userAccountDetails: userAccountDetailsCopy, 
+                isLoading: false
+            })
+        }
+        catch(error) {
+            this.setState({ isLoading: false })
+            showErrorModal(error.message)
+        }
     }
 
     render() {
         let personalDetails = []
         let financialDetails = []
-        const data = this.state.data
+        const data = this.state.userData
+        const accountData = this.state.userAccountDetails
 
         if(data) {
             personalDetails = [
@@ -73,9 +148,10 @@ class UserDetails extends Component {
                             </div>
                         :   <>
                                 <div className={ classes.BoxContainer }>
-                                    <Box title="Account Balance" amount={ data.acc_bal ? `₹ ${ convertToINR(data.acc_bal) }` : '₹ 0.00' } />
-                                    <Box title="Total Withdraw" amount={ data.total_withdraw ? ` ₹ ${ convertToINR(data.total_withdraw) }` : '₹ 0.00' } />
-                                    <Box title="Total Tokens" amount={ data ? data.tokens : 0 } />
+                                    <Box title="FireFly Account Balance" amount={ `₹ ${ convertToINR(accountData.accountBalance) }` } />
+                                    <Box title="Total Withdraw" amount={ ` ₹ ${ convertToINR(accountData.withdrawAmount) }` } />
+                                    <Box title="Total Number of Tokens" amount={ accountData.tokens } />
+                                    <Box title="Total Profit" amount={ `₹ ${ convertToINR(accountData.profit) }` } />
                                 </div>
 
                                 <div className={ classes.DetailsContainer }>
@@ -114,7 +190,10 @@ class UserDetails extends Component {
                                     </div>
                                 </div>
 
-                                <TableContainer />
+                                <TableContainer 
+                                    purchaseData = { this.state.userPurchaseData }
+                                    sellData = { this.state.userSellingData }
+                                    withdrawData = { this.state.userWithdrawData } />
                             </>
                 }
             </div>    

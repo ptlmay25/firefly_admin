@@ -16,15 +16,18 @@ const WithdrawRequest = () => {
     const [ value, setValue ] = useState(0)
     const [ requestData, setRequestData ] = useState([])
     const [ dataSource, setDataSource ] = useState(requestData)
-    const [ selectedRows, setSelectedRows ] = useState()
-    const { isLoading, sendRequest } = useHttpClient()    
+    const [ selectedRows, setSelectedRows ] = useState([])
+    const { sendRequest } = useHttpClient()  
+    const [ isLoading, setIsLoading ] = useState(true) 
 
     useEffect(() => {
         const fetchData = () => {
             sendRequest('/withdrawRequest')
                 .then((response) => {
+                    setIsLoading(false)
                     let withdrawRequestValue = 0
-                    const newData = response.data.map((data) => {
+                    const filteredData = response.data.filter(data => data.Status === false)
+                    const newData = filteredData.map((data) => {
                         if(data.total_amount) {
                             withdrawRequestValue += data.total_amount
                         }
@@ -34,6 +37,7 @@ const WithdrawRequest = () => {
                             withdraw_id: data._id,
                             key: data._id,
                             total_amount: `₹ ${ convertToINR(data.total_amount) }`,
+                            amount: data.total_amount,
                             createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
                         }
                     })
@@ -41,7 +45,10 @@ const WithdrawRequest = () => {
                     setRequestData(newData)
                     setDataSource(newData)
                 })
-                .catch((error) => showErrorModal(error.message))
+                .catch((error) => {
+                    setIsLoading(false)
+                    showErrorModal(error.message)
+                })
         }
         fetchData()
     }, [sendRequest])
@@ -61,30 +68,22 @@ const WithdrawRequest = () => {
     } 
 
     const onWithdrawHandler = () => {
+        setIsLoading(true)
         if(selectedRows.length === 0) {
             alert("Select entries to withdraw first")
         } else {
             selectedRows.forEach(element => {
-               axios.delete(apiContext.baseURL + `/withdrawRequest/delete?request_No=${element._id}`)
+                axios.put(apiContext.baseURL + `/withdrawRequest/check/${element._id}/user/${element.userId}`, { total_amount: element.amount })
                     .then((response) => {
-                        if(response.status === 'success') {
-                            const elementCopy = { ...element }
-                            elementCopy.request_No = element._id
-                            
-                            axios.post(apiContext.baseURL + '/withdrawHistory/add', elementCopy)
-                                .then(() => {
-                                    console.log("Request Successful")
-                                })
-                                .catch((error) => {
-                                    showErrorModal(error.message)
-                                })
-                        }
+                        console.log(response)
                     })
                     .catch((error) => {
                         showErrorModal(error.message)
-                    })
-            });
-        }
+                    }) 
+            })
+            setIsLoading(false)
+            window.location.reload()
+        }   
     }
 
     return (

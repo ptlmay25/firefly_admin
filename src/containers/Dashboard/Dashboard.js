@@ -17,6 +17,7 @@ class Dashboard extends Component {
     state = {
         data: {
             users: 0,
+            partners: 0,
             token_price: 0,
             purchase: {
                 total_tokens: 0,
@@ -30,9 +31,9 @@ class Dashboard extends Component {
                 requests: 0,
                 amount: 0
             },
-            hotels: {
+            business: {
                 brands: 0,
-                rooms: 0
+                products: 0
             }
         },
         isLoading: true,
@@ -41,6 +42,7 @@ class Dashboard extends Component {
     componentDidMount() {
         axios.get(apiContext.baseURL + '/dashboard')
             .then((response) => {
+                console.log(response.data.data)
                 this.setState({
                     data: response.data.data,
                     isLoading: false
@@ -53,7 +55,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const { token_price , purchase, sold, withdrawRequest, hotels, users } = this.state.data
+        const { token_price , purchase, sold, withdrawRequest, business, partners, users } = this.state.data
         return (
             <Container fluid className={ classes.Dashboard }>
                 <Row>
@@ -91,7 +93,10 @@ class Dashboard extends Component {
                                         </Row>
             
                                         <Row>
-                                            <Card title="Total Hotels + Rooms" color="#5B2600" cash_amount={ `Rooms: ${ hotels && hotels.rooms }` } amount={ `Brands: ${hotels && hotels.brands}` } link="hotels"/>
+                                            <Card title="Brand List" color="#5B2600" cash_amount={ `Total Products: ${ business && business.products }` } amount={ `Brands: ${ business && business.brands }` } link="business"/>
+                                            <Card title="Retail Partner List" color="#0F777D" cash_amount="" amount={ partners } link="partners"/>
+                                        </Row>
+                                        <Row>
                                             <Card title="User List" color="#3B5AC9" cash_amount="" amount={ users } link="users"/>
                                         </Row>
                                     </div>

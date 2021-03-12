@@ -20,15 +20,18 @@ const WithdrawHistory = () => {
     useEffect(() => {
         let totalWithdrawalAmount = 0
         const fetchData = () => {
-            sendRequest('/withdrawHistory')
+            sendRequest('/withdrawRequest')
                 .then((response) => {
-                    const newData = response.data.map((data) => {
+                    console.log(response.data)
+                    const filteredData = response.data.filter(data => data.Status === true)
+                    const newData = filteredData.map((data) => {
                         if(data.total_amount) {
                             totalWithdrawalAmount += data.total_amount 
                         }
                         return {
                             ...data,
                             key: data._id,
+                            request_number: data._id,
                             total_amount: `₹ ${ convertToINR(data.total_amount) }`,
                             createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
                         }

@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/actionTypes'
 import { updateObject } from '../../resources/Utilities'
 
-const token = localStorage.getItem('token')
+const token = sessionStorage.getItem('token')
 let initialState = {
     isLoggedIn: false
 }
@@ -13,7 +13,7 @@ if(token) {
 }
 
 const onAuthEnd = (state, action) => {
-    localStorage.setItem('token', null)
+    sessionStorage.removeItem('token')
     return updateObject(state, { isLoggedIn: false })
 }
 

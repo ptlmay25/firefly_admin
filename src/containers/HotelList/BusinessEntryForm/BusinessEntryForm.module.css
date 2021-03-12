@@ -31,3 +31,11 @@
     background-color: #424770 !important;
     border-color: #424770 !important;
 }
+
+
+.Center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
