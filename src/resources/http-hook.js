@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import axios from 'axios'
+import { apiContext } from './api-context'
 
 export const useHttpClient = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -7,7 +8,7 @@ export const useHttpClient = () => {
 
     const sendRequest = useCallback( async (url, method='get', data=null, headers=null) => {
         setIsLoading(true)
-        const uri = 'http://localhost:5000/api' + url
+        const uri = apiContext.baseURL + url
 
         try {
             const response = await axios({ method, url: uri, data, headers }) 
