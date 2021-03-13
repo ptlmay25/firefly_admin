@@ -37,7 +37,6 @@ const SellingHistory = () => {
                             date: new Date(data.date).toLocaleDateString('en-IN')
                         }
                     })
-                    console.log(newData)
                     setTokenCount(tempTokenCount)
                     setTokenValue(`₹ ${ convertToINR(totalTokenValue) }`)
                     setSellingData(newData)
@@ -58,9 +57,7 @@ const SellingHistory = () => {
             <NavigationBar />
             { 
                 isLoading 
-                ?   <div className={ classes.Center }>
-                        <LoadingSpinner />
-                    </div> 
+                ? <LoadingSpinner />
                 : null
             }
             {

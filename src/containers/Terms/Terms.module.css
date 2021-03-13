@@ -1,0 +1,40 @@
+.Terms{
+    padding: 40px 150px;
+}
+
+.LinkContainer {
+    padding-top: 40px;
+    padding-left: 100px;
+}
+
+.Link {
+    color: black;
+    font-size: 16px;
+}
+
+.Link:hover {
+    color: black;
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 600px) {
+    .Terms {
+        padding: 30px;
+    }
+
+    .LinkContainer {    
+        padding-top: 20px;
+        padding-left: 30px;
+    }
+}
+
+@media screen and (max-width: 1000px) and (min-width: 601px) {
+    .Terms {
+        padding: 30px 100px;
+    }
+
+    .LinkContainer {    
+        padding-top: 30px;
+        padding-left: 100px;
+    }
+}

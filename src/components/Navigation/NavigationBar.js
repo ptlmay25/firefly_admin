@@ -8,7 +8,7 @@ import classes from './NavigationBar.module.css'
 const NavigationBar = (props) => {
     return (
         <div className={ classes.NavigationBar }>
-            <NavLink to="/dash" className={ classes.Link }>Home</NavLink>
+            <NavLink to="admin2050/dash" className={ classes.Link }>Home</NavLink>
             <NavLink to="/logout" className={ classes.Link } onClick={() => props.onAuthEnd()}>Logout</NavLink>
         </div>
     )

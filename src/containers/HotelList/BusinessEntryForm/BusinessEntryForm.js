@@ -61,8 +61,9 @@ class HotelEntryForm extends Component {
             'Process-Data': 'false'
         })
             .then((response) => {
+                console.log(response)
                 this.setState({ isLoading: false })
-                this.props.history.push('/business')
+                this.props.history.push('/admin2050/business')
             })
             .catch((error) => showErrorModal(error.message))
     } 
@@ -79,9 +80,7 @@ class HotelEntryForm extends Component {
                 <NavigationBar />
                 {
                     this.state.isLoading 
-                        ?   <div className={ classes.Center }>
-                                <LoadingSpinner />
-                            </div>
+                        ?   <LoadingSpinner />
                         :   <Container className={ classes.FormContainer }>
                                 <Form onSubmit={(e) => this.onSubmitHandler(e)}>
                                     <Row style={{ paddingTop: '10px' }}>
@@ -153,7 +152,7 @@ class HotelEntryForm extends Component {
                                     </Row>
                                     <div className={ classes.ButtonContainer }>
                                         <Button id="save" style={{ width: '150px' }} type="submit">Save</Button>
-                                        <Button variant="danger" style={{ width: '150px' }} onClick={() => this.props.history.push('/hotels')}>Cancel</Button>
+                                        <Button variant="danger" style={{ width: '150px' }} onClick={() => this.props.history.push('/admin2050/business')}>Cancel</Button>
                                     </div>
                                 </Form>
                             </Container>

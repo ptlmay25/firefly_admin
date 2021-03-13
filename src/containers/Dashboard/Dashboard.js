@@ -42,7 +42,6 @@ class Dashboard extends Component {
     componentDidMount() {
         axios.get(apiContext.baseURL + '/dashboard')
             .then((response) => {
-                console.log(response.data.data)
                 this.setState({
                     data: response.data.data,
                     isLoading: false
@@ -63,21 +62,19 @@ class Dashboard extends Component {
                         <h3>FIREFLY</h3>
                         <hr></hr>
                         <div className={ classes.Links }>
-                            <NavLink to="/dash" className={ classes.Link }>Dashboard</NavLink>
-                            <NavLink to="/purchase-history" className={ classes.Link }>Purchase History</NavLink>
-                            <NavLink to="/selling-history" className={ classes.Link }>Sell History</NavLink>
-                            <NavLink to="/withdraw-history" className={ classes.Link }>Withdraw History</NavLink>
-                            <NavLink to="/contact-history" className={ classes.Link }>Contact History</NavLink>
-                            <NavLink to="/contact-request" className={ classes.Link }>Contact Requests</NavLink>
+                            <NavLink to="./" className={ classes.Link }>Dashboard</NavLink>
+                            <NavLink to="./purchase-history" className={ classes.Link }>Purchase History</NavLink>
+                            <NavLink to="./selling-history" className={ classes.Link }>Sell History</NavLink>
+                            <NavLink to="./withdraw-history" className={ classes.Link }>Withdraw History</NavLink>
+                            <NavLink to="./contact-history" className={ classes.Link }>Contact History</NavLink>
+                            <NavLink to="./contact-request" className={ classes.Link }>Contact Requests</NavLink>
                             <NavLink to="/logout" className={ classes.Link } onClick={() => this.props.onAuthEnd()}>Log out</NavLink>
                         </div>
                     </Col>
                     <Col md={10} className={ classes.MainMenu }>
                     {
                         this.state.isLoading 
-                            ?   <div className={ classes.Center }>
-                                    <LoadingSpinner />
-                                </div>
+                            ?   <LoadingSpinner />
                             :   <>
                                     <h5>Dashboard</h5>
                                     <hr></hr>

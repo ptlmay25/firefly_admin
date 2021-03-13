@@ -30,10 +30,3 @@
     vertical-align: center;
     background-color: #d6d6d6
 }
-
-.Center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    vertical-align: middle;
-}

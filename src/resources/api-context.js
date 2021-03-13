@@ -1,9 +1,20 @@
+const URL = [
+    {
+        baseURL: 'http://localhost:5000/api',
+        assetURL: 'http://localhost:5000',
+    },
+    {
+        baseURL: 'http://157.245.107.251/api',
+        assetURL: 'http://157.245.107.251',
+    }
+]
+
 export const apiContext = {
-    baseURL: 'http://localhost:5000/api',
-    assetURL: 'http://localhost:5000'
+    ...URL[1],
+    validPhoneNumbers: [
+        '917600257008',
+        '917874994529',
+        '916353209001'
+    ]
 }
 
-// export const apiContext = {
-//     baseURL: 'https://tranquil-river-00045.herokuapp.com/api',
-//     assetURL: 'https://tranquil-river-00045.herokuapp.com'
-// }

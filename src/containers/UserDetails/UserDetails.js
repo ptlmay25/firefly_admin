@@ -47,6 +47,7 @@ class UserDetails extends Component {
                     num_of_tokens: element.num_of_tokens,
                     token_price: `₹ ${ convertToINR(element.token_price) }`,
                     total_amount: `₹ ${ convertToINR(element.token_price * element.num_of_tokens) }`,
+                    amount: element.token_price * element.num_of_tokens,
                     status: element.status
                 }
             })
@@ -58,6 +59,7 @@ class UserDetails extends Component {
                     num_of_tokens: element.num_of_tokens,
                     token_price: `₹ ${ convertToINR(element.token_price) }`,
                     total_amount: `₹ ${ convertToINR(element.token_price * element.num_of_tokens) }`,
+                    amount: element.token_price * element.num_of_tokens,
                     status: element.status
                 }
             })
@@ -67,6 +69,7 @@ class UserDetails extends Component {
                     ...element,
                     date: new Date(element.createdAt).toLocaleDateString('en-IN'),
                     total_amount: `₹ ${ convertToINR(element.total_amount) }`,
+                    amount: element.total_amount
                 }
             }) 
 
@@ -89,7 +92,11 @@ class UserDetails extends Component {
             })
 
             const token_price = await( await axios.get(apiContext.baseURL + `/token/getLatestTokenPrice`)).data.data.token_price
-            userAccountDetailsCopy.profit = (token_price - (totalPurchaseAmount/totalTokenPurchased)) * totalTokenSold
+            if(totalTokenPurchased !== 0)
+                userAccountDetailsCopy.profit = (token_price - (totalPurchaseAmount/totalTokenPurchased)) * totalTokenSold
+            else
+                userAccountDetailsCopy.profit = 0
+
             userAccountDetailsCopy.tokens = totalTokenPurchased - totalTokenSold
             userAccountDetailsCopy.accountBalance = userData.acc_bal ? userData.acc_bal : 0
 
@@ -143,9 +150,7 @@ class UserDetails extends Component {
                 <NavigationBar />
                 {
                     this.state.isLoading
-                        ?   <div className={ classes.Center }>
-                                <LoadingSpinner />
-                            </div>
+                        ?   <LoadingSpinner />
                         :   <>
                                 <div className={ classes.BoxContainer }>
                                     <Box title="FireFly Account Balance" amount={ `₹ ${ convertToINR(accountData.accountBalance) }` } />

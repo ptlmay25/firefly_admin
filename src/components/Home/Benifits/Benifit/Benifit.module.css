@@ -1,0 +1,27 @@
+.Benifit {
+    padding: 10px 90px !important;
+}
+
+.Desc {
+    margin-top: 20px;
+    color: slategrey;
+}
+
+
+@media screen and (max-width: 600px) {
+    .Benifit {
+        padding: 10px 30px !important;
+    }
+}
+
+@media screen and (min-width: 601px) and (max-width: 1000px) {
+    .Benifit {
+        padding: 10px 30px!important;
+    }
+}
+
+@media screen and (min-width: 1001px) and (max-width: 1350px) {
+    .Benifit {
+        padding: 10px 30px !important;
+    }
+}

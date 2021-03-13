@@ -19,13 +19,6 @@
     margin-top: -40px;
 }
 
-.Center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    vertical-align: middle;
-}
-
 .TableContainer {
     margin-top: 30px;
     padding: 20px 120px;

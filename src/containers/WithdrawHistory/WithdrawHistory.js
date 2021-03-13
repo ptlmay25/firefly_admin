@@ -22,7 +22,6 @@ const WithdrawHistory = () => {
         const fetchData = () => {
             sendRequest('/withdrawRequest')
                 .then((response) => {
-                    console.log(response.data)
                     const filteredData = response.data.filter(data => data.Status === true)
                     const newData = filteredData.map((data) => {
                         if(data.total_amount) {
@@ -54,9 +53,7 @@ const WithdrawHistory = () => {
             <NavigationBar />
             { 
                 isLoading 
-                ?   <div className={ classes.Center }>
-                        <LoadingSpinner />
-                    </div> 
+                ? <LoadingSpinner />
                 : null
             }
             {

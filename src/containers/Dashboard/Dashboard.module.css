@@ -32,14 +32,6 @@
     margin-left: 15px;
 }
 
-
-.Center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    vertical-align: middle;
-}
-
 .Link:hover {
     color: white;
     font-size: 17px;

@@ -20,14 +20,6 @@
     padding: 50px;
 }
 
-
-.Center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    vertical-align: middle;
-}
-
 .OTP {
     width: 150px;
     margin-top: 25px;

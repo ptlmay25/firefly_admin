@@ -75,12 +75,6 @@ class ContactRequest extends Component {
             }
             this.setState({ isLoading: false })
             window.location.reload()
-            // const requestData = await this.getRequestData()
-            // this.setState({
-            //     requestData,
-            //     dataSource: requestData, 
-            //     isLoading: false 
-            // })
         }
     }
 
@@ -90,9 +84,7 @@ class ContactRequest extends Component {
                 <NavigationBar />
                 { 
                     this.state.isLoading 
-                    ?   <div className={ classes.Center }>
-                            <LoadingSpinner />
-                        </div> 
+                    ? <LoadingSpinner />
                     : null
                 }
                 {

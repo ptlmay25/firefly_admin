@@ -29,13 +29,6 @@
     padding: 20px 120px;
 }
 
-.Center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    vertical-align: middle;
-}
-
 .Row td {
     font-weight: 400;
 }

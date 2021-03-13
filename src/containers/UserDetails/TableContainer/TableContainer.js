@@ -18,13 +18,13 @@ const TableContainer = (props) => {
     const [ dataSourceSelling, setDataSourceSelling ] = useState(sellingData);
     
     const onSearchWithdraw = e => {
-        setDataSourceWithdraw(withdrawData.filter( entry =>  entry.amount.includes(e.target.value) ))
+        setDataSourceWithdraw(withdrawData.filter( entry =>  entry.date.includes(e.target.value) ))
     }
     const onSearchPurchase = e => {
-        setDataSourcePurchase(purchaseData.filter( entry =>  entry.purchase_id.includes(e.target.value) ))
+        setDataSourcePurchase(purchaseData.filter( entry =>  entry.purchaseId.includes(e.target.value) ))
     }
     const onSearchSelling = e => {
-        setDataSourceSelling(sellingData.filter( entry =>  entry.selling_id.includes(e.target.value) ))
+        setDataSourceSelling(sellingData.filter( entry =>  entry.sellingId.includes(e.target.value) ))
     }
 
     return (
@@ -38,7 +38,7 @@ const TableContainer = (props) => {
                 <div className={ classes.Table }>
                     { 
                         selectedTable === 'withdraw' 
-                            ?   <TabPanel title="Withdrawal" columns={ columns.USER_WITHDRAWAL_HISTORY } data={ dataSourceWithdraw } placeholder="Search by amount" onSearch={ onSearchWithdraw } /> 
+                            ?   <TabPanel title="Withdrawal" columns={ columns.USER_WITHDRAWAL_HISTORY } data={ dataSourceWithdraw } placeholder="Search by Date" onSearch={ onSearchWithdraw } /> 
                             :   null
                     }  
                     { 

@@ -1,0 +1,41 @@
+.Stats {
+    padding: 80px 250px !important;
+    background-color: #fafafa;
+}
+
+.Desc {
+    margin-top: 15px;
+}
+
+.Stat {
+    text-align: center;
+}
+
+.Image {
+    width: 130px;
+    height: 130px;
+    border-radius: 130px;
+}
+
+
+@media screen and (max-width: 600px) {
+    .Stats {
+        padding: 60px !important;
+    }
+
+    .Stat {
+        margin-top: 40px;
+    }
+}
+
+@media screen and (min-width: 601px) and (max-width: 1000px) {
+    .Stats {
+        padding: 60px !important;
+    }
+}
+
+@media screen and (min-width: 1001px) and (max-width: 1350px) {
+    .Stats {
+        padding: 60px 100px!important;
+    }
+}

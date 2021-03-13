@@ -9,6 +9,8 @@ import AdminImage from '../../assets/admin.png'
 import classes from './Auth.module.css'
 import "../../resources/firebase-context";
 import * as actions from './../../store/actions/index'
+import { apiContext } from '../../resources/api-context';
+import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner';
 
 
 class Auth extends Component {
@@ -16,7 +18,8 @@ class Auth extends Component {
       OTPSent: false,
       confirmResult: null,
       verificationCode: "",
-      inProgress: false
+      inProgress: false,
+      isLoading: false,
     }
 
     componentDidMount = () => {
@@ -43,17 +46,17 @@ class Auth extends Component {
     // To send OTP to the entered mobile number
     sendOtp = (event) => {
       event.preventDefault();
-      if(this.state.phone === '917600257008' || this.state.phone === '917874994529') {
+      if(apiContext.validPhoneNumbers.includes(this.state.phone)){
         this.captchaInit();
         this.setState({ inProgress: true });
-    
+
         firebase.auth().signInWithPhoneNumber("+" + this.state.phone, this.applicationVerifier)
           .then(confirmResult => {
-            this.setState({ confirmResult, OTPSent: true, inProgress: false });
+            this.setState({ confirmResult, OTPSent: true, inProgress: false, isLoading: false });
           })
           .catch(error => {
             this.captchaInit();
-            this.setState({ inProgress: false });
+            this.setState({ inProgress: false, isLoading: false });
             alert(error.message);
           })
       }
@@ -74,7 +77,7 @@ class Auth extends Component {
             this.setState({ OTPSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false });    
             this.props.onAuthStart()
             sessionStorage.setItem('token', true)
-            this.props.history.push('/dash')
+            this.props.history.push('./dash')
           })
           .catch(error => {
             alert(error.message)
@@ -88,51 +91,55 @@ class Auth extends Component {
         return (
             <div className={ classes.Auth }>
                 <img src={AdminImage} alt="Admin Logo" className={ classes.Image } />
-                <Container className={ classes.InputContainer }>
-                    <PhoneInput 
-                        value={ this.state.phone }
-                        required={ true }
-                        autoFocus={ true }
-                        onChange={ (phone) => this.setState({ phone }) }
-                        country='in'
-                        disabled={ this.state.inProgress }
-                        className={ classes.PhoneInput }
-                        placeholder="Phone Number" />
+                {
+                  this.state.isLoading 
+                  ? <LoadingSpinner />
+                  : <Container className={ classes.InputContainer }>
+                      <PhoneInput 
+                          value={ this.state.phone }
+                          required={ true }
+                          autoFocus={ true }
+                          onChange={ (phone) => this.setState({ phone }) }
+                          country='in'
+                          disabled={ this.state.OTPSent }
+                          className={ classes.PhoneInput }
+                          placeholder="Phone Number" />
 
-                    {
-                        !this.state.OTPSent 
-                        ?   <Button 
-                                size="large" 
-                                shape="round" 
-                                type="primary" 
-                                className={ classes.OTP } 
-                                onClick={(event) => this.sendOtp(event)}>
-                                    Send OTP
-                            </Button>
-                        :   <>
-                                <Space direction="vertical" className={ classes.Input }>
-                                    <Input.Password
-                                        value={ this.state.verificationCode }
-                                        onChange={ (e) => this.setState({ verificationCode: e.target.value }) }                            
-                                        placeholder="Enter OTP"
-                                        maxLength={6}
-                                        style={{ marginTop: '20px', marginLeft: '10px' ,width: '300px' }}/>
-                                </Space>
+                      {
+                          !this.state.OTPSent 
+                          ?   <Button 
+                                  size="large" 
+                                  shape="round" 
+                                  type="primary" 
+                                  className={ classes.OTP } 
+                                  onClick={(event) => this.sendOtp(event)}>
+                                      Send OTP
+                              </Button>
+                          :   <>
+                                  <Space direction="vertical" className={ classes.Input }>
+                                      <Input.Password
+                                          value={ this.state.verificationCode }
+                                          onChange={ (e) => this.setState({ verificationCode: e.target.value }) }                            
+                                          placeholder="Enter OTP"
+                                          maxLength={6}
+                                          style={{ marginTop: '20px', marginLeft: '10px' ,width: '300px' }}/>
+                                  </Space>
 
-                                <Button 
-                                        size="large" 
-                                        shape="round" 
-                                        type="primary" 
-                                        className={ classes.OTP }
-                                        onClick={(event) => this.verifyOtp(event)}> 
-                                            Login
-                                </Button>
-                            </>
-                    }
-                    <div ref={ref => this.recaptchaWrapperRef = ref}>
-                      <div id="recaptcha-container"></div>
-                    </div>
-                </Container>
+                                  <Button 
+                                          size="large" 
+                                          shape="round" 
+                                          type="primary" 
+                                          className={ classes.OTP }
+                                          onClick={(event) => this.verifyOtp(event)}> 
+                                              Login
+                                  </Button>
+                              </>
+                      }
+                      <div ref={ref => this.recaptchaWrapperRef = ref}>
+                        <div id="recaptcha-container"></div>
+                      </div>
+                  </Container>
+                }
             </div>
         )
     }

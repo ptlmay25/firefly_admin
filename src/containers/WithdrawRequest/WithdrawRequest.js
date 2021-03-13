@@ -91,9 +91,7 @@ const WithdrawRequest = () => {
             <NavigationBar />
             { 
                 isLoading 
-                ?   <div className={ classes.Center }>
-                        <LoadingSpinner />
-                    </div> 
+                ? <LoadingSpinner />
                 : null
             }
             {

@@ -51,7 +51,7 @@ class PartnerEntryForm extends Component {
         axios.post(apiContext.baseURL + '/retailer/create', this.state.retailerInfo)
             .then(() => {
                 this.setState({ isLoading: false })
-                this.props.history.push('/partners')
+                this.props.history.push('/admin2050/partners')
             })
             .catch((error) => showErrorModal(error.message))
     }
@@ -221,7 +221,7 @@ class PartnerEntryForm extends Component {
 
                                 <div className={ classes.ButtonContainer }>
                                     <Button id="save" style={{ width: '150px' }} type="submit">Save</Button>
-                                    <Button variant="danger" style={{ width: '150px' }} onClick={() => this.props.history.push('/partners')}>Cancel</Button>
+                                    <Button variant="danger" style={{ width: '150px' }} onClick={() => this.props.history.push('/admin2050/partners')}>Cancel</Button>
                                 </div>
                             </Col>
                         </Row>

@@ -128,18 +128,24 @@ export class TokenPrice extends Component {
 
     sendOtp = (event) => {
         event.preventDefault();
-        this.captchaInit();
-        this.setState({ inProgress: true });
-    
-        firebase.auth().signInWithPhoneNumber("+" + this.state.phone, this.applicationVerifier)
-          .then(confirmResult => {
-            this.setState({ confirmResult, otpSent: true, inProgress: false });
-          })
-          .catch(error => {
+
+        if(apiContext.validPhoneNumbers.includes(this.state.phone)){
             this.captchaInit();
-            this.setState({ inProgress: false });
-            alert(error.message);
-          })
+            this.setState({ inProgress: true });
+        
+            firebase.auth().signInWithPhoneNumber("+" + this.state.phone, this.applicationVerifier)
+            .then(confirmResult => {
+                this.setState({ confirmResult, otpSent: true, inProgress: false });
+            })
+            .catch(error => {
+                this.captchaInit();
+                this.setState({ inProgress: false });
+                alert(error.message);
+            })
+        }
+        else {
+            alert("The Number you have entered is not authenticated! Kindly enter administrator's phone number.")
+        }
     }
     
     verifyOtp = (event) => {
@@ -154,13 +160,8 @@ export class TokenPrice extends Component {
                 axios.post(apiContext.baseURL + '/token/create', { data: { ...this.state.tokenHistory }})
                     .then((response) => {
                         this.onClearHandler()
-                        // alert(response.data.message)
-                        // const tokenPriceHistory = this.getTokenHistory()
                         this.setState({ 
                             isModalOpen: false,
-                            // tokenPriceHistory: tokenPriceHistory,
-                            // dataSource: tokenPriceHistory,
-                            // tokenHistory: update(this.state.tokenHistory, { price_per_token: { $set: this.getTokenPrice() }})  
                         })
                         window.location.reload()
                     })
@@ -267,9 +268,7 @@ export class TokenPrice extends Component {
                 <NavigationBar />
                 {
                     this.state.isLoading 
-                        ?   <div className={ classes.Center }>
-                                <LoadingSpinner />
-                            </div>
+                        ?   <LoadingSpinner />
                         :   
                             <>
                                 <div className={ classes.FormContainer }>

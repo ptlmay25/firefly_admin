@@ -22,7 +22,6 @@ const BusinessList = (props) => {
         const fetchData = () => {
             sendRequest('/brand')
                 .then((response) => {
-                    console.log(response.data)
                     setBusinessData(response.data)
                     setDataSource(response.data)
                 })
@@ -40,9 +39,7 @@ const BusinessList = (props) => {
             <NavigationBar />
             { 
                 isLoading 
-                    ?   <div className={ classes.Center }>
-                            <LoadingSpinner />
-                        </div>
+                    ?   <LoadingSpinner />
                     :   <>
                             <div className={ classes.InfoContainer }>
                                 <div className={ classes.InfoContainer1 }>
@@ -64,9 +61,8 @@ const BusinessList = (props) => {
                                                 brand={ element.brandName }
                                                 alt={ apiContext.assetURL + element.brandImg }
                                                 products={ element.noOfProduct }
-                                                // brandImg={ apiContext.assetURL + element.brandImg }
-                                                brandImg={ 'http://24c73340ea96.ngrok.io/static/uploads/asfa_1615445054190' }
-                                                />
+                                                brandImg={ apiContext.assetURL + element.brandImg }
+                                            />
                                         ))
                                     }
                                 </Row>
