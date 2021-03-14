@@ -1,0 +1,47 @@
+.Dashboard {
+    height: auto;
+}
+
+.SideMenu {
+    height: 100vh;
+    padding: 15px 10px;
+    background-color: #424770;
+    text-align: center;
+}
+
+.SideMenu h3,
+.SideMenu a {
+    color: white;
+}
+
+.SideMenu hr {
+    background-color: white;
+}
+
+.Links {
+    display: flex;
+    flex-flow: column;
+    text-align: left;
+    padding: 10px;
+    font-size: 16px;
+    font-family: Roboto, sans-serif;
+}
+
+.Link {
+    margin-bottom: 25px;
+    margin-left: 15px;
+}
+
+.Link:hover {
+    color: white;
+    font-size: 17px;
+    text-decoration: underline;
+}
+
+.MainMenu {
+    padding-top: 25px;
+}
+
+.MainMenu h5 {
+    margin-left: 15px;
+}

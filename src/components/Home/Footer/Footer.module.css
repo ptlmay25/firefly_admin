@@ -1,0 +1,112 @@
+.Footer {
+    background: linear-gradient(90deg, #0094D1 0%, #2CC4F4 99.24%);
+    box-shadow: 0px 4px 4px rgba(49, 49, 49, 0.25);
+    padding: 60px 150px!important;
+    color: white;
+    font-family: Roboto, sans-serif;
+}
+
+.Button {
+    margin-top: 20px;
+    width: 100px;
+}
+
+:global .btn-success {
+    background-color: #F04923 !important;
+    border-color: #F04923 !important;
+}
+
+.Details p {
+    margin-top: 30px;
+}
+
+.ContactDetails {
+    margin-top: 30px;
+    margin-left: 20px;
+    font-size: 16px;
+}
+
+.LinkContainer {
+    padding: 10px 100px;
+    background-color: #007bb8;
+    display: flex;
+    justify-content: space-between;
+}
+
+.Link {
+    color: white;
+    margin-right: 30px;
+}
+
+.Link:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+.Icon {
+    font-size: 28px;
+    color: white !important;
+    margin-left: 20px;
+}
+
+@media screen and (max-width: 600px) {
+    .Footer {
+        padding: 60px !important;
+    }
+
+    .Soho h1 {
+        font-size: 35px;
+    }
+
+    .Soho p {
+        margin-top: 15px;
+    }
+
+    .Contact {
+        margin-top: 30px;
+        text-align: right;
+    }
+
+    .Contact h3 {
+        border-bottom: 1px solid white;
+        padding-right: 10px;
+    }
+
+    .ContactDetails {
+        margin-top: 15px !important;
+        font-size: 16px !important;
+    }
+
+    .LinkContainer {
+        padding: 10px 50px;
+    }
+
+    .Icons {
+        margin-top: 30px;
+    }
+
+    .Icon {
+        margin-left: 5px;
+    }
+
+    .Links {
+        display: flex;
+        flex-flow: column;
+    }
+}
+
+@media screen and (min-width: 601px) and (max-width: 1000px) {
+    .Footer {
+        padding: 60px !important;
+    }
+
+    .LinkContainer {
+        padding: 10px 50px;
+    }
+}
+
+@media screen and (min-width: 1001px) and (max-width: 1350px) {
+    .Footer {
+        padding: 60px 100px!important;
+    }
+}

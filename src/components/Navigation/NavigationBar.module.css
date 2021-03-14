@@ -1,0 +1,19 @@
+.NavigationBar {
+    background-color: #424770;
+    display: flex;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    justify-content: space-between;
+    padding: 15px 40px;
+    vertical-align: middle;
+    font-size: 16px;
+}
+
+.Link {
+    color:white;
+}
+
+.Link:hover {
+    color: white;
+    font-weight: bold;
+    text-decoration: underline;
+}

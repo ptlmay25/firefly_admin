@@ -1,0 +1,14 @@
+.Section {
+    margin-bottom: 30px;
+    text-align: justify;
+    font-style: Roboto, sans-serif;
+}
+
+.Header {
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+.Para {
+    margin-bottom: 0px;
+}

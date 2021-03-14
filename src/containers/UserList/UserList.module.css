@@ -1,0 +1,30 @@
+.InfoContainer{
+    margin-top: 80px;
+    padding: 20px 80px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.InfoContainer h6 {
+    border-bottom: 1px solid black;
+    padding: 5px;
+}
+
+.Search {
+    max-width: 250px;
+}
+
+.TableContainer {
+    margin-top: 20px;
+    padding: 20px 100px;
+}
+
+.Row { 
+    cursor: pointer;
+}
+
+.Row td {
+    font-weight: 400;
+}
+

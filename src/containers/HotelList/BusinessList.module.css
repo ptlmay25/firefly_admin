@@ -1,0 +1,22 @@
+.InfoContainer{
+    margin-top: 50px;
+    padding: 20px 90px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.InfoContainer1 {
+    display: flex;
+}
+
+.Button {
+    margin-left: 30px;
+    margin-top: -5px;
+    min-width: 150px;
+}
+
+.Search {
+    max-width: 250px;
+}
+

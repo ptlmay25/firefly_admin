@@ -1,0 +1,33 @@
+.FormContainer{
+    padding-top: 80px;
+}
+
+.ImageContainer {
+    padding-left: 50px;
+}
+
+.Button {
+    margin-top: -10px;
+}
+
+.PreviewImage {
+    margin-top: 20px;
+    align-content: center;
+    border: 1px solid black;
+    height: 300px;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
+    background-color: #d6d6d6
+}
+
+.ButtonContainer {
+    padding: 40px;
+}
+
+:global .btn-primary{
+    background-color: #424770 !important;
+    border-color: #424770 !important;
+}

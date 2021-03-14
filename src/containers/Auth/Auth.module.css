@@ -1,0 +1,41 @@
+.Auth{
+    background-color:  #EDEDED;
+    height: 100vh;
+    background-size: cover;
+    padding: 140px 16px;
+}
+
+.Image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.InputContainer {
+    margin-top: 30px;
+    display: flex;
+    flex-flow: column;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.Input {
+    max-width: 320px !important;
+    min-width: 320px;
+}
+
+:global .ant-btn-primary {
+    background-color: #424770 !important;
+    border-color: #424770 !important;
+}
+
+:global .react-tel-input { 
+    width: initial !important
+}
+
+.OTP {
+    margin-top: 20px;
+    width: 200px;
+    border-radius: 50px;
+    background-color: #424770;
+}

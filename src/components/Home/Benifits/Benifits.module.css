@@ -1,0 +1,39 @@
+.Benifits {
+    padding: 80px 120px!important;
+}
+
+.Header1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Header {
+    width: max-content;
+    padding: 0px 10px;
+    border-bottom: 1px solid black;
+    text-align: center;
+}
+
+.Row {
+    margin-top: 60px;
+}
+
+
+@media screen and (max-width: 600px) {
+    .Benifits {
+        padding: 30px !important;
+    }
+}
+
+@media screen and (min-width: 601px) and (max-width: 1000px) {
+    .Benifits {
+        padding: 60px!important;
+    }
+}
+
+@media screen and (min-width: 1001px) and (max-width: 1350px) {
+    .Benifits {
+        padding: 60px 90px !important;
+    }
+}
