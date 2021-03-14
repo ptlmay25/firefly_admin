@@ -38,10 +38,9 @@ const UserList = (props) => {
 
     const onRowClick = row => {
         return {
-            onClick: () => props.history.push(`/users/${row._id}`, row._id),
+            onClick: () => props.history.push(`/admin2050/users/${row._id}`, row._id),
         }
     }
-    // eslint-disable-next-line
     const onSearch = e => {
         setDataSource(users.filter( entry =>  entry.name.includes(e.target.value) ))
     }

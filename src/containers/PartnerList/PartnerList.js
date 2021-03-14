@@ -1,4 +1,3 @@
-//  eslint-disable-next-line
 import React, { useState, useEffect } from 'react'
 import { Table } from 'antd'
 
@@ -7,17 +6,14 @@ import Search from '../../components/Shared/Search/Search'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 import classes from './PartnerList.module.css'
 import columns from '../../resources/TableColumns'
-//  eslint-disable-next-line
-import { convertToINR, itemRender } from '../../resources/Utilities'
+import { itemRender } from '../../resources/Utilities'
 import { useHttpClient } from '../../resources/http-hook'
 import { showErrorModal } from '../../resources/Utilities'
 import { Button } from 'react-bootstrap'
 
 const PartnerList = (props) => {
-    //  eslint-disable-next-line
     const [ partners, setpartners ] = useState([])
     const [ dataSource, setDataSource ] = useState([])
-    //  eslint-disable-next-line
     const { isLoading, sendRequest } = useHttpClient()
 
     useEffect(() => {

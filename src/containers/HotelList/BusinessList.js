@@ -59,7 +59,7 @@ const BusinessList = (props) => {
                                         dataSource.map((element) => (
                                             <CustomCard 
                                                 brand={ element.brandName }
-                                                alt={ apiContext.assetURL + element.brandImg }
+                                                alt={ element.brandName }
                                                 products={ element.noOfProduct }
                                                 brandImg={ apiContext.assetURL + element.brandImg }
                                             />

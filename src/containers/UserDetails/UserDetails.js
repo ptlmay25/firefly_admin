@@ -38,8 +38,6 @@ class UserDetails extends Component {
             const userSellingData = await (await axios.get(apiContext.baseURL + `/sell/view/user/${userId}`)).data.data
             const userWithdrawData = await (await axios.get(apiContext.baseURL + `/withdrawRequest/view/user/${userId}`)).data.data
 
-            console.log(userWithdrawData)
-
             const userPurchaseDataCopy = userPurchaseData.map((element) => {
                 return {
                     date: new Date(element.date).toLocaleDateString('en-IN'),
@@ -175,7 +173,7 @@ class UserDetails extends Component {
                                             </Table>
                                         </div>
                                         <div className={ classes.Photo }>
-                                            <img src={ Avatar } alt="" width="175px" height="175px" />                
+                                            <img src={ data.userImg ? apiContext.assetURL + data.userImg : Avatar } alt="" width="175px" height="175px" />                
                                         </div>
                                     </div>
                                 </div>

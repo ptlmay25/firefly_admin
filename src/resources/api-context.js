@@ -14,7 +14,6 @@ export const apiContext = {
     validPhoneNumbers: [
         '917600257008',
         '917874994529',
-        '916353209001'
     ]
 }
 

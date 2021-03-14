@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap'
 import classes from './Header.module.css'
 
 import playStore from '../../../assets/images/playstore1.png'
-import phone from '../../../assets/images/phone2.png'
+import phone from '../../../assets/images/phone.png'
 
 const Header = () => {
     return (
