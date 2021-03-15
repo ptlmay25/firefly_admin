@@ -182,7 +182,10 @@ export class TokenPrice extends Component {
     onFormSubmit = (event) => {
         event.preventDefault()
         const tokenHistory = this.state.tokenHistory
-        tokenHistory.dividend_per_token = tokenHistory.split_50_50 / tokenHistory.total_number_of_tokens
+        if(tokenHistory.total_number_of_tokens === 0)
+            tokenHistory.dividend_per_token = 0        
+        else
+            tokenHistory.dividend_per_token = tokenHistory.split_50_50 / tokenHistory.total_number_of_tokens
         tokenHistory.new_token_price = tokenHistory.dividend_per_token + tokenHistory.price_per_token
         
         let date = tokenHistory.upload_date.toString()
