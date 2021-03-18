@@ -95,6 +95,7 @@ export class TokenPrice extends Component {
             const tokenHistoryData = await this.getTokenHistory()
             tokenInfo.price_per_token = await this.getTokenPrice()
             tokenInfo.total_number_of_tokens = await this.getNumberOfTokens()
+            console.log(await this.getNumberOfTokens())
 
             this.setState({
                 isLoading: false,
@@ -356,11 +357,11 @@ export class TokenPrice extends Component {
                                                             <tbody>
                                                                 <tr>
                                                                     <td colSpan={2} style={{ fontWeight: '500' }}>Today's Dividend per token: </td>
-                                                                    <td colSpan={2} style={{ fontWeight: '500' }}>{ dividend_per_token === 0 ? '' : `${ convertToINR(dividend_per_token ) }` }</td>
+                                                                    <td colSpan={2} style={{ fontWeight: '500' }}>{ dividend_per_token === 0 ? '₹ 0.00' : `₹ ${ convertToINR(dividend_per_token ) }` }</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td style={{ fontWeight: '500' }}>New Token Price: </td>
-                                                                    <td style={{ fontWeight: '500' }}>{ new_token_price === 0 ? '' : `${ convertToINR(new_token_price) }` }</td>
+                                                                    <td style={{ fontWeight: '500' }}>{ new_token_price === 0 ? '₹ 0.00' : `₹ ${ convertToINR(new_token_price) }` }</td>
                                                                     <td style={{ fontWeight: '500' }}>Date: </td>
                                                                     <td style={{ fontWeight: '500' }}>{date}</td>
                                                                 </tr>
