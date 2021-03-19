@@ -4,8 +4,8 @@ const URL = [
         assetURL: 'http://localhost:5000',
     },
     {
-        baseURL: 'https://firefly-admin-nodejs-nob8m.ondigitalocean.app/api',
-        assetURL: 'https://firefly-admin-nodejs-nob8m.ondigitalocean.app',
+        baseURL: 'https://firefly-admin-nodejs-nob8m.ondigitalocean.app/app/api',
+        assetURL: 'https://firefly-admin-nodejs-nob8m.ondigitalocean.app/app',
     }
 ]
 
