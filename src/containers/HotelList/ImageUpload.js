@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from 'react-bootstrap'
+import { apiContext } from '../../resources/api-context'
 
-import classes from './BusinessEntryForm.module.css'
+import classes from './BusinessForm.module.css'
 
 const ImageUpload = (props) => {
     const [ file, setFile ] = useState()
@@ -11,10 +12,14 @@ const ImageUpload = (props) => {
     useEffect(() => {
         if(!file)
             return
+        if(props.imageURL){
+            setPreviewUrl(apiContext.assetURL + props.imageURL)
+            return
+        }
         const fileReader = new FileReader()
         fileReader.onload = () => setPreviewUrl(fileReader.result)
         fileReader.readAsDataURL(file)    
-    }, [file])
+    }, [file, props.imageURL])
 
     const pickedHandler = event => {
         let pickedFile
@@ -40,7 +45,7 @@ const ImageUpload = (props) => {
                     accept="image/*" 
                     style={{ display: 'none' }} />
                 
-                <Button style={{ width: '150px', marginTop: '-10px' }} onClick={ () => pickImageHandler() }>
+                <Button style={{ width: '150px', marginTop: '-10px' }} onClick={ () => pickImageHandler() } disabled={ props.disableUpload }>
                     Upload
                 </Button>
             </div>

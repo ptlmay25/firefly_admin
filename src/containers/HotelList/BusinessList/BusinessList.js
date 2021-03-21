@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Container, Row } from 'react-bootstrap'
-import CustomCard from '../../components/HotelList/Card/CustomCard'
+import CustomCard from '../../../components/HotelList/Card/CustomCard'
 
-import NavigationBar from '../../components/Navigation/NavigationBar'
-import Search from '../../components/Shared/Search/Search'
+import NavigationBar from '../../../components/Navigation/NavigationBar'
+import Search from '../../../components/Shared/Search/Search'
 import classes from './BusinessList.module.css'
-import { useHttpClient } from '../../resources/http-hook'
-import { showErrorModal } from '../../resources/Utilities'
-import { apiContext } from '../../resources/api-context'
-import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
+import { useHttpClient } from '../../../resources/http-hook'
+import { showErrorModal } from '../../../resources/Utilities'
+import { apiContext } from '../../../resources/api-context'
+import LoadingSpinner from '../../../components/Shared/LoadingSpinner/LoadingSpinner'
 
 
 const BusinessList = (props) => {
@@ -34,6 +34,10 @@ const BusinessList = (props) => {
         setDataSource(businessData.filter( entry =>  entry.brandName.includes(e.target.value) ))
     }
 
+    const onClick = id => {
+        props.history.push(`./business/update/${ id }`, id)
+    }
+
     return (
         <>
             <NavigationBar />
@@ -51,7 +55,7 @@ const BusinessList = (props) => {
                                         + Add
                                     </Button>
                                 </div>
-                                <Search placeholder="Search By Name" onSearch={ onSearch } className={ classes.Search }/>
+                                <Search placeholder="Search Brand" onSearch={ onSearch } className={ classes.Search }/>
                             </div>
                             <Container className={ classes.ListContainer } fluid style={{ padding: '20px 100px' }}>
                                 <Row>
@@ -62,6 +66,7 @@ const BusinessList = (props) => {
                                                 alt={ element.brandName }
                                                 products={ element.noOfProduct }
                                                 brandImg={ apiContext.assetURL + element.brandImg }
+                                                onClick={ () => onClick(element._id) }
                                             />
                                         ))
                                     }

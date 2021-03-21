@@ -19,13 +19,24 @@ const UserList = (props) => {
         const fetchUsers = () => {
             sendRequest('/user')
                 .then((response) => {
-                    const newUsers = response.data.map((user) => {
+                    const newUsers = response.data.map((data) => {
+
+                        const transformedData = {
+                            _id: data._id, 
+                            name: data.username,
+                            mobileNo: data.mobileNo,
+                            gender: data.gender,
+                            tokens: data.tokens,
+                            total_dividend: data.total_dividend,
+                            acc_bal: data.acc_bal,
+                            createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
+                        }
+
                         return {
-                            ...user,
-                            key: user._id,
-                            name: user.firstName ? `${user.firstName} ${user.lastName}` : '',
-                            acc_bal: `₹ ${ convertToINR(user.acc_bal) }`,
-                            createdAt: new Date(user.createdAt).toLocaleDateString('en-IN')
+                            ...transformedData,
+                            key: data._id,
+                            searchString: Object.values(transformedData).join(''),
+                            acc_bal: `₹ ${ convertToINR(data.acc_bal) }`,
                         }
                     })
                     setUsers(newUsers)
@@ -42,7 +53,7 @@ const UserList = (props) => {
         }
     }
     const onSearch = e => {
-        setDataSource(users.filter( entry =>  entry.name.includes(e.target.value) ))
+        setDataSource(users.filter( entry =>  entry.searchString.includes(e.target.value) ))
     }
     
     return (
@@ -58,7 +69,7 @@ const UserList = (props) => {
                     ?   <>
                             <div className={ classes.InfoContainer }>
                                 <h6> Total Users :- &nbsp; <span style={{ fontSize: '20px' }}>{ users.length }</span> </h6>
-                                <Search placeholder="Search by Name" onSearch={ onSearch }/>
+                                <Search placeholder="Search User" onSearch={ onSearch }/>
                             </div>
                             <div className={ classes.TableContainer }>
                                 <Table 

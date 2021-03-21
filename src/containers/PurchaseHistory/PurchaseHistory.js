@@ -1,84 +1,114 @@
-import React, { useState, useEffect } from 'react'
+import React, { Component } from 'react'
 import NavigationBar from '../../components/Navigation/NavigationBar'
-import { useHttpClient } from '../../resources/http-hook'
 
 import classes from './PurchaseHistory.module.css'
 import CustomTable from '../../components/Shared/CustomTable/CustomTable'
 import columns from '../../resources/TableColumns'
 import Search from '../../components/Shared/Search/Search'
-import { convertToINR, showErrorModal } from '../../resources/Utilities'
+import { convertToINR, convertToPhoneNumber, showErrorModal } from '../../resources/Utilities'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
 
-const PurchaseHistory = () => {
-    const [ tokenCount, setTokenCount ] = useState()
-    const [ tokenValue, setTokenValue ]  = useState()
-    const [ purchaseData, setPurchaseData ] = useState([])
-    const [ dataSource, setDataSource ] = useState([]);
-    const { isLoading, sendRequest } = useHttpClient()
+import axios from 'axios'
+import { apiContext } from '../../resources/api-context'
 
-    useEffect(() => {
-        const fetchData = () => {
-            sendRequest('/purchase')
-                .then((response) => {
-                    let tempTokenCount = 0
-                    let totalTokenValue = 0
-                    const newData = response.data.map((data) => {
-                        tempTokenCount += data.num_of_tokens
-                        totalTokenValue += data.num_of_tokens * data.token_price
-                        return {
-                            key: data._id,
-                            pur_id: data._id,
-                            user_acc_num: data.user_id,
-                            status: data.status,
-                            token_price: `₹ ${convertToINR(data.token_price) }`,
-                            num_of_tokens: data.num_of_tokens,
-                            total_price: `₹ ${ convertToINR(data.num_of_tokens * data.token_price) }`,
-                            date: new Date(data.date).toLocaleDateString('en-IN'),
-                        }
-                    })
-                    setTokenCount(tempTokenCount)
-                    setTokenValue(`₹ ${ convertToINR(totalTokenValue) }`)
-                    setPurchaseData(newData)
-                    setDataSource(newData)
-                })
-                .catch((error) => showErrorModal(error.message))
-        }
-        fetchData()
-    }, [sendRequest])
+class PurchaseHistory extends Component {
 
-
-    const onSearch = e => {
-        setDataSource(purchaseData.filter( entry =>  entry.pur_id.includes(e.target.value) ))
+    state = {
+        tokenCount: 0,
+        tokenValue: 0,
+        purchaseData: null,
+        dataSource: null,
+        isLoading: true
     }
 
-    return (
-        <>
-            <NavigationBar />
-            { 
-                isLoading 
-                ? <LoadingSpinner/>
-                : null
-            }
-            {
-                !isLoading && purchaseData
-                ?   <>  
-                        <div className={ classes.InfoContainer }>
-                            <h6> Total Number of Tokens Purchased :- &nbsp; <span style={{ fontSize: '20px' }}>{ tokenCount }</span> </h6>
-                            <h6> Total Token Value :- &nbsp; <span style={{ fontSize: '20px' }}>{ tokenValue }</span> </h6>
-                        </div>
-                        
-                        <div className={ classes.TableContainer }>
-                            <div className={classes.Header}>
-                                <h6>Token Purchase History</h6>
-                                <Search placeholder="Search By Purchase ID" onSearch={ onSearch } className={ classes.Search }/>
+    getPhoneNumber = id => {
+        return axios.get(apiContext.baseURL + `/user/view/${id}`)
+            .then((response) => {
+                return response.data.data[0].mobileNo
+            }) 
+            .catch((error) => showErrorModal(error.message))
+    }
+
+    componentDidMount = async () => {
+        try {
+            let tempTokenCount = 0
+            let totalTokenValue = 0
+ 
+            const { data: { data: purchaseData } } = await axios.get(apiContext.baseURL + '/purchase')
+            this.setState({ isLoading: false })
+
+            const newData = await purchaseData.map(async (data) => {
+                tempTokenCount += data.num_of_tokens
+                totalTokenValue += data.num_of_tokens * data.token_price
+
+                const transformedData = {
+                    pur_id: data._id,
+                    user_acc_num: data.user_id,
+                    status: data.status,
+                    token_price: data.token_price,
+                    num_of_tokens: data.num_of_tokens,
+                    total_price: data.total_price,
+                    date: new Date(data.date).toLocaleDateString('en-IN'),
+                }
+
+                return {
+                    ...transformedData,
+                    key: data._id,
+                    searchString: Object.values(transformedData).join(''),
+                    mobileNo: convertToPhoneNumber(await this.getPhoneNumber(data.user_id)),    
+                    token_price: `₹ ${ convertToINR(data.token_price) }`,
+                    total_price: `₹ ${ convertToINR(data.num_of_tokens * data.token_price) }`,
+                }
+            })
+
+            const newData1 = await Promise.all(newData)
+
+            this.setState({
+                tokenCount: tempTokenCount,
+                tokenValue: totalTokenValue,
+                purchaseData: newData1,
+                dataSource: newData1
+            })
+        } catch(error) {
+            showErrorModal(error.message)
+            this.setState({ isLoading: false })
+        }
+    }
+
+    onSearch = e => {
+        this.setState({ dataSource: this.state.purchaseData.filter( entry =>  entry.searchString.includes(e.target.value)) })
+    }
+
+    render() {
+        return (
+            <>
+                <NavigationBar />
+                { 
+                    this.state.isLoading 
+                    ? <LoadingSpinner/>
+                    : null
+                }
+                {
+                    !this.state.isLoading && this.state.purchaseData
+                    ?   <>  
+                            <div className={ classes.InfoContainer }>
+                                <h6> Total Number of Tokens Purchased :- &nbsp; <span style={{ fontSize: '20px' }}>{ this.state.tokenCount }</span> </h6>
+                                <h6> Total Token Value :- &nbsp; <span style={{ fontSize: '20px' }}>{ this.state.tokenValue }</span> </h6>
                             </div>
-                            <CustomTable columns={ columns.PURCHASE_HISTORY } data={ dataSource } />
-                        </div>
-                    </>     
-                :   null
-            }
-        </>
-    )
+                            
+                            <div className={ classes.TableContainer }>
+                                <div className={classes.Header}>
+                                    <h6>Token Purchase History</h6>
+                                    <Search placeholder="Search Purchase History" onSearch={ this.onSearch } className={ classes.Search }/>
+                                </div>
+                                <CustomTable columns={ columns.PURCHASE_HISTORY } data={ this.state.dataSource } />
+                            </div>
+                        </>     
+                    :   null
+                }
+            </>
+        )
+    }
 }
 
 export default PurchaseHistory

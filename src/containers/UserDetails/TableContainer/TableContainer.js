@@ -18,13 +18,13 @@ const TableContainer = (props) => {
     const [ dataSourceSelling, setDataSourceSelling ] = useState(sellingData);
     
     const onSearchWithdraw = e => {
-        setDataSourceWithdraw(withdrawData.filter( entry =>  entry.date.includes(e.target.value) ))
+        setDataSourceWithdraw(withdrawData.filter( entry =>  entry.searchString.includes(e.target.value) ))
     }
     const onSearchPurchase = e => {
-        setDataSourcePurchase(purchaseData.filter( entry =>  entry.purchaseId.includes(e.target.value) ))
+        setDataSourcePurchase(purchaseData.filter( entry =>  entry.searchString.includes(e.target.value) ))
     }
     const onSearchSelling = e => {
-        setDataSourceSelling(sellingData.filter( entry =>  entry.sellingId.includes(e.target.value) ))
+        setDataSourceSelling(sellingData.filter( entry =>  entry.searchString.includes(e.target.value) ))
     }
 
     return (
@@ -38,17 +38,17 @@ const TableContainer = (props) => {
                 <div className={ classes.Table }>
                     { 
                         selectedTable === 'withdraw' 
-                            ?   <TabPanel title="Withdrawal" columns={ columns.USER_WITHDRAWAL_HISTORY } data={ dataSourceWithdraw } placeholder="Search by Date" onSearch={ onSearchWithdraw } /> 
+                            ?   <TabPanel title="Withdrawal" columns={ columns.USER_WITHDRAWAL_HISTORY } data={ dataSourceWithdraw } placeholder="Search Withdraw History" onSearch={ onSearchWithdraw } /> 
                             :   null
                     }  
                     { 
                         selectedTable === 'purchase' 
-                            ?  <TabPanel title="Purchase"  columns={ columns.USER_PURCHASE_HISTORY } data={ dataSourcePurchase } placeholder="Search By ID" onSearch={ onSearchPurchase } /> 
+                            ?  <TabPanel title="Purchase"  columns={ columns.USER_PURCHASE_HISTORY } data={ dataSourcePurchase } placeholder="Search Purchase History" onSearch={ onSearchPurchase } /> 
                             :   null 
                     }  
                     { 
                         selectedTable === 'selling' 
-                            ?  <TabPanel title="Selling"  columns={ columns.USER_SELLING_HISTORY } data={ dataSourceSelling } placeholder="Search by ID" onSearch={ onSearchSelling }  /> 
+                            ?  <TabPanel title="Selling"  columns={ columns.USER_SELLING_HISTORY } data={ dataSourceSelling } placeholder="Search Selling History" onSearch={ onSearchSelling }  /> 
                             :   null 
                     }  
                 </div>

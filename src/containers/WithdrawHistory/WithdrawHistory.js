@@ -27,12 +27,22 @@ const WithdrawHistory = () => {
                         if(data.total_amount) {
                             totalWithdrawalAmount += data.total_amount 
                         }
-                        return {
-                            ...data,
-                            key: data._id,
+
+                        const transformedData = {
                             request_number: data._id,
-                            total_amount: `₹ ${ convertToINR(data.total_amount) }`,
+                            name: data.name,
+                            UPI: data.UPI,
+                            total_amount: data.total_amount,
+                            BankAccountNumber: data.BankAccountNumber,
+                            IFSC: data.IFSC,
                             createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
+                        }
+
+                        return {
+                            ...transformedData,
+                            key: data._id,
+                            searchString: Object.values(transformedData).join(''),
+                            total_amount: `₹ ${ convertToINR(data.total_amount) }`,
                         }
                     })
                     setTotalValue(`₹ ${ convertToINR(totalWithdrawalAmount) }`)
@@ -45,7 +55,7 @@ const WithdrawHistory = () => {
     }, [sendRequest])
 
     const onSearch = e => {
-        setDataSource(withdrawalData.filter( entry =>  entry.name.includes(e.target.value) ))
+        setDataSource(withdrawalData.filter( entry =>  entry.searchString.includes(e.target.value) ))
     }
 
     return (
@@ -67,7 +77,7 @@ const WithdrawHistory = () => {
                         <div className={ classes.TableContainer }>
                             <div className={classes.Header}>
                                 <h6>Withdrawal History</h6>
-                                <Search placeholder="Search By Name" onSearch={ onSearch } className={ classes.Search }/>
+                                <Search placeholder="Search Withdraw History" onSearch={ onSearch } className={ classes.Search }/>
                             </div>
                             <CustomTable columns={ columns.WITHDRAWAL_HISTORY } data={ dataSource } />
                         </div>

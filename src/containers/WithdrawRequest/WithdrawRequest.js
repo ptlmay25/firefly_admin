@@ -32,13 +32,24 @@ const WithdrawRequest = () => {
                             withdrawRequestValue += data.total_amount
                         }
 
-                        return {
-                            ...data,
+                        const transformedData = {
                             withdraw_id: data._id,
-                            key: data._id,
-                            total_amount: `₹ ${ convertToINR(data.total_amount) }`,
-                            amount: data.total_amount,
+                            userId: data.userId,
+                            acc_holder_name: data.acc_holder_name,
+                            total_amount: data.total_amount,
+                            BankAccountNumber: data.BankAccountNumber,
+                            acc_bal: data.acc_bal,
+                            IFSC: data.IFSC,
                             createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
+                        }
+
+                        return {
+                            ...transformedData,
+                            key: data._id,
+                            searchString: Object.values(transformedData).join(''),
+                            amount: data.total_amount,
+                            total_amount: `₹ ${ convertToINR(data.total_amount) }`,
+                            acc_bal: `₹ ${ convertToINR(data.acc_bal) }`,
                         }
                     })
                     setValue(`₹ ${ convertToINR(withdrawRequestValue) }`)
@@ -64,7 +75,7 @@ const WithdrawRequest = () => {
     };
 
     const onSearch = e => {
-        setDataSource(requestData.filter( entry =>  entry.userId.includes(e.target.value) ))
+        setDataSource(requestData.filter( entry =>  entry.searchString.includes(e.target.value) ))
     } 
 
     const onWithdrawHandler = () => {
@@ -108,7 +119,7 @@ const WithdrawRequest = () => {
                         <div className={ classes.TableContainer }>
                             <div className={classes.Header}>
                                 <h6>Withdrawal Requests</h6>
-                                <Search placeholder="Search By User ID" onSearch={ onSearch } className={ classes.Search }/>
+                                <Search placeholder="Search Withdraw Requests" onSearch={ onSearch } className={ classes.Search }/>
                             </div>
                             <Table 
                                 columns={ columns.WITHDRAWAL_REQUEST }

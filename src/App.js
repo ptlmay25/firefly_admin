@@ -14,12 +14,14 @@ const Terms = React.lazy(() => import('./containers/Terms/Terms'))
 const Auth = React.lazy(() => import('./containers/Auth/Auth'))
 const Dashboard = React.lazy(() => import('./containers/Dashboard/Dashboard'))
 const UserList = React.lazy(() => import('./containers/UserList/UserList'))
-const PartnerList = React.lazy(() => import('./containers/PartnerList/PartnerList'))
+const PartnerList = React.lazy(() => import('./containers/PartnerList/List/PartnerList'))
 const UserDetails = React.lazy(() => import('./containers/UserDetails/UserDetails'))
 const TokenPrice = React.lazy(() => import('./containers/TokenPrice/TokenPrice'))
-const BusinessList = React.lazy(() => import('./containers/HotelList/BusinessList'))
-const BusinessEntryForm = React.lazy(() => import('./containers/HotelList/BusinessEntryForm/BusinessEntryForm'))
-const PartnerEntryForm = React.lazy(() => import('./containers/PartnerList/PartnerEntryForm/PartnerEntryForm'))
+const BusinessList = React.lazy(() => import('./containers/HotelList/BusinessList/BusinessList'))
+const NewBusiness = React.lazy(() => import('./containers/HotelList/NewBusiness/NewBusiness'))
+const UpdateBusiness = React.lazy(() => import('./containers/HotelList/UpdateBusiness/UpdateBusiness'))
+const NewPartner = React.lazy(() => import('./containers/PartnerList/NewPartner/NewPartner'))
+const UpdatePartner = React.lazy(() => import('./containers/PartnerList/UpdatePartner/UpdatePartner'))
 const PurchaseHistory = React.lazy(() => import('./containers/PurchaseHistory/PurchaseHistory'))
 const SellingHistory = React.lazy(() => import('./containers/SellingHistory/SellingHistory'))
 const WithdrawHistory = React.lazy(() => import('./containers/WithdrawHistory/WithdrawHistory'))
@@ -56,8 +58,10 @@ class App extends Component {
           <Route path="/admin2050/contact-request" component={ ContactRequest } />
           <Route path="/admin2050/contact-history" component={ ContactHistory } />
           <Route path="/admin2050/business" exact component={ BusinessList } />
-          <Route path="/admin2050/business/add" component={ BusinessEntryForm } />
-          <Route path="/admin2050/partners/add" component={ PartnerEntryForm } />
+          <Route path="/admin2050/business/add" component={ NewBusiness } />
+          <Route path="/admin2050/partners/add" component={ NewPartner } />
+          <Route path="/admin2050/business/:id" component={ UpdateBusiness } />
+          <Route path="/admin2050/partners/:id" component={ UpdatePartner } />
           <Route path="/admin2050/dash" component={ Dashboard } />
           <Redirect to="/admin2050/dash" />
         </Switch>

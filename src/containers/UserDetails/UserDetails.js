@@ -7,7 +7,7 @@ import classes from './UserDetails.module.css'
 import TableContainer from './TableContainer/TableContainer'
 import Heading from '../../components/UserDetails/Heading'
 import Avatar from '../../assets/avatar.png'
-import { convertToINR, showErrorModal } from '../../resources/Utilities'
+import { convertToINR, convertToPhoneNumber, showErrorModal } from '../../resources/Utilities'
 
 import axios from 'axios'
 import { apiContext } from '../../resources/api-context'
@@ -39,35 +39,60 @@ class UserDetails extends Component {
             const userWithdrawData = await (await axios.get(apiContext.baseURL + `/withdrawRequest/view/user/${userId}`)).data.data
 
             const userPurchaseDataCopy = userPurchaseData.map((element) => {
-                return {
+                const transformedData = {
                     date: new Date(element.date).toLocaleDateString('en-IN'),
                     purchaseId: element._id,
                     num_of_tokens: element.num_of_tokens,
+                    amount: element.token_price * element.num_of_tokens,
+                    status: element.status,
+                    token_price: element.token_price,
+                    total_amount: element.total_amount
+                }
+
+                return {
+                    ...transformedData,
+                    key: element._id,
+                    searchString: Object.values(transformedData).join(''),
                     token_price: `₹ ${ convertToINR(element.token_price) }`,
                     total_amount: `₹ ${ convertToINR(element.token_price * element.num_of_tokens) }`,
-                    amount: element.token_price * element.num_of_tokens,
-                    status: element.status
                 }
             })
 
-            const userSellingDataCopy = userSellingData.map((element) => {
-                return {
+            const userSellingDataCopy = userSellingData.map((element) => {  
+                const transformedData = {
                     date: new Date(element.date).toLocaleDateString('en-IN'),
                     sellingId: element._id,
                     num_of_tokens: element.num_of_tokens,
+                    amount: element.token_price * element.num_of_tokens,
+                    status: element.status,
+                    token_price: element.token_price,
+                    total_amount: element.total_amount
+                }
+
+                return {
+                    ...transformedData,
+                    key: element._id,
+                    searchString: Object.values(transformedData).join(''),
                     token_price: `₹ ${ convertToINR(element.token_price) }`,
                     total_amount: `₹ ${ convertToINR(element.token_price * element.num_of_tokens) }`,
-                    amount: element.token_price * element.num_of_tokens,
-                    status: element.status
                 }
             })
 
             const userWithdrawDataCopy = userWithdrawData.map((element) => {
-                return {
-                    ...element,
+                const transformedData = {
                     date: new Date(element.createdAt).toLocaleDateString('en-IN'),
+                    bankAccountNo: element.bankAccountNo,
+                    IFSC: element.IFSC,
+                    UPI: element.UPI,
+                    status: element.status,
+                    amount: element.total_amount,
+                    total_amount: element.total_amount
+                }
+                return {
+                    ...transformedData,
+                    key: element._id,
+                    searchString: Object.values(transformedData).join(''),
                     total_amount: `₹ ${ convertToINR(element.total_amount) }`,
-                    amount: element.total_amount
                 }
             }) 
 
@@ -120,13 +145,14 @@ class UserDetails extends Component {
         const accountData = this.state.userAccountDetails
 
         if(data) {
+            const name = data.username.split(' ')
             personalDetails = [
                 { field: 'User ID', value: data._id },
-                { field: 'First Name', value: data.firstName },
-                { field: 'Last Name', value: data.lastName },
+                { field: 'First Name', value: name[0] },
+                { field: 'Last Name', value: name[1] },
                 { field: 'Gender', value: data.gender },
                 { field: 'Date of Birth', value: data.DOB },
-                { field: 'Phone Number', value: data.mobileNo },
+                { field: 'Phone Number', value: convertToPhoneNumber(data.mobileNo) },
                 { field: 'Aadhar/Pan Card Number', value: data.aadharCardNo },
                 { field: 'Email Address', value: data.emailAddress },
                 { field: 'Home Address', value: data.homeAddress },

@@ -26,10 +26,19 @@ class ContactRequest extends Component {
         try {
             const requestData = await (await axios.get(apiContext.baseURL + '/contact/request')).data.data
             return requestData.map((data) => {
-                return {
-                    ...data,
-                    key: data._id,
+
+                const transformedData = {
+                    name: data.name,
+                    email: data.email,
+                    BankAccountNumber: data.BankAccountNumber,
+                    message: data.message,
                     createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
+                }
+
+                return {
+                    ...transformedData,
+                    key: data._id,
+                    searchString: Object.values(transformedData).join(''),
                 }
             })
         } catch(error) {
@@ -57,7 +66,7 @@ class ContactRequest extends Component {
     };
 
     onSearch = e => {
-        this.setState({ dataSource: this.state.requestData.filter( entry =>  entry.name.includes(e.target.value) )}) 
+        this.setState({ dataSource: this.state.searchString.filter( entry =>  entry.name.includes(e.target.value) )}) 
     }
 
     onSolvedHandler = async () => {
@@ -100,7 +109,7 @@ class ContactRequest extends Component {
                             <div className={ classes.TableContainer }>
                                 <div className={classes.Header}>
                                     <h6>Contact Us Requests</h6>
-                                    <Search placeholder="Search By User ID" onSearch={ this.onSearch } className={ classes.Search }/>
+                                    <Search placeholder="Search Requests" onSearch={ this.onSearch } className={ classes.Search }/>
                                 </div>
                                 <Table 
                                     columns={ columns.CONTACT_REQUEST }
