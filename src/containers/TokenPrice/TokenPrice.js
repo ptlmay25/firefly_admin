@@ -69,18 +69,31 @@ export class TokenPrice extends Component {
         
             return tokenHistoryData.map((element) => {
                 const date = new Date(element.upload_date)
-                return {
-                    key: element._id,
-                    total_revenue: `₹ ${ convertToINR(element.total_revenue )}`,
-                    operating_expenses: `₹ ${ convertToINR(element.operating_expenses )}`,
-                    interest_and_taxes: `₹ ${ convertToINR(element.interest_and_taxes )}`,
-                    net_profit: `₹ ${ convertToINR(element.net_profit )}`,
-                    split_50_50: `₹ ${ convertToINR(element.split_50_50 )}`,
+
+                const transformedData = {
+                    total_revenue: element.total_revenue,
+                    operating_expenses: element.operating_expenses,
+                    interest_and_taxes: element.interest_and_taxes,
+                    net_profit: element.net_profit,
+                    split_50_50: element.split_50_50,
                     total_number_of_tokens: element.total_number_of_tokens,
-                    dividend_per_token: `₹ ${ convertToINR(element.dividend_per_token )}`,
-                    token_price: `₹ ${ convertToINR(element.token_price )}`,
+                    dividend_per_token: element.dividend_per_token,
+                    token_price: element.token_price,
                     upload_date: new Date(element.upload_date).toLocaleDateString('en-IN'),
                     month: `${ MONTHS[ date.getMonth()] } ${ date.getFullYear() }`
+                }
+
+                return {
+                    ...transformedData,
+                    key: element._id,
+                    searchString: Object.values(transformedData).join(''),
+                    total_revenue: `₹ ${ convertToINR(element.total_revenue)}`,
+                    operating_expenses: `₹ ${ convertToINR(element.operating_expenses)}`,
+                    interest_and_taxes: `₹ ${ convertToINR(element.interest_and_taxes)}`,
+                    net_profit: `₹ ${ convertToINR(element.net_profit)}`,
+                    split_50_50: `₹ ${ convertToINR(element.split_50_50)}`,
+                    dividend_per_token: `₹ ${ convertToINR(element.dividend_per_token)}`,
+                    token_price: `₹ ${ convertToINR(element.token_price)}`,
                 }
             })
         } catch (error) {
@@ -95,7 +108,6 @@ export class TokenPrice extends Component {
             const tokenHistoryData = await this.getTokenHistory()
             tokenInfo.price_per_token = await this.getTokenPrice()
             tokenInfo.total_number_of_tokens = await this.getNumberOfTokens()
-            console.log(await this.getNumberOfTokens())
 
             this.setState({
                 isLoading: false,
@@ -110,7 +122,7 @@ export class TokenPrice extends Component {
     }
 
     onSearch = e => {
-        this.setState({ dataSource: this.state.tokenPriceHistory.filter((entry) =>  entry.upload_date.includes(e.target.value))})
+        this.setState({ dataSource: this.state.tokenPriceHistory.filter((entry) =>  entry.searchString.includes(e.target.value))})
     }
 
     captchaInit = () => {
@@ -382,7 +394,7 @@ export class TokenPrice extends Component {
                                 <div className={ classes.TableContainer }>
                                     <div className={classes.Header}>
                                         <h6>Token Price History</h6>
-                                        <Search placeholder="Search By Date" onSearch={ this.onSearch } className={ classes.Search }/>
+                                        <Search placeholder="Search Token History " onSearch={ this.onSearch } className={ classes.Search }/>
                                     </div>
                                     <CustomTable columns={ columns.TOKEN_PRICE_HISTORY } data={ dataSource } />
                                 </div>

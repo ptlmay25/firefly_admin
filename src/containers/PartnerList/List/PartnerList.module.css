@@ -32,6 +32,9 @@
     margin-top: 20px;
     padding: 20px 100px;
 }
+.Row { 
+    cursor: pointer;
+}
 
 .Row td {
     font-weight: 400;

@@ -54,6 +54,14 @@
     height: 50px;
 }
 
+.Link {
+    color: white !important
+}
+
+.Link:hover {
+    color: white
+}
+
 :global .btn-dark {
     background-color: #2e2d31 !important;
     border-color: #2e2d31 !important;

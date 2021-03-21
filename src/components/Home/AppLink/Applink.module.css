@@ -16,6 +16,14 @@
     height: 50px;
 }
 
+.Link {
+    color: white !important
+}
+
+.Link:hover {
+    color: white
+}
+
 @media screen and (max-width: 600px) {
     .AppLink {
         padding: 60px;

@@ -1,7 +1,7 @@
 const URL = [
     {
-        baseURL: 'http://localhost:5000/api',
-        assetURL: 'http://localhost:5000',
+        baseURL: 'http://localhost:8080/api',
+        assetURL: 'http://localhost:8080',
     },
     {
         baseURL: 'https://firefly-admin-nodejs-nob8m.ondigitalocean.app/app/api',
@@ -10,7 +10,7 @@ const URL = [
 ]
 
 export const apiContext = {
-    ...URL[1],
+    ...URL[0],
     validPhoneNumbers: [
         '917600257008',
         '917874994529',

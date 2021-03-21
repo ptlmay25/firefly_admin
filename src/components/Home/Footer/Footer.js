@@ -43,7 +43,7 @@ const Footer = (props) => {
                     <a href="https://www.instagram.com/salersclub/" rel="noreferrer" target="_blank">
                         <InstagramOutlined className={ classes.Icon } />
                     </a> {'    '}
-                    <a href="https://www.instagram.com/salersclub/" rel="noreferrer" target="_blank">
+                    <a href="https://twitter.com/Salersclub" rel="noreferrer" target="_blank">
                         <TwitterOutlined className={ classes.Icon }/>
                     </a>
                 </div>

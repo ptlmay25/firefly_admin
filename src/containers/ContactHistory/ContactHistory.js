@@ -19,11 +19,19 @@ const ContactHistory = () => {
             sendRequest('/contact/history')
                 .then((response) => {
                     const newData = response.data.map((data) => {
-                        return {
-                            ...data,
-                            key: data._id,
-                            createdAt: new Date(data.createdAt).toLocaleDateString('en-IN')
 
+                        const transformedData = {
+                            _id: data._id,
+                            createdAt: new Date(data.createdAt).toLocaleDateString('en-IN'),
+                            name: data.name,
+                            BankAccountNumber: data.BankAccountNumber,
+                            message: data.message,
+                        }
+
+                        return {
+                            ...transformedData,
+                            key: data._id,
+                            searchString: Object.values(transformedData).join(''),
                         }
                     })
                     setContactHistory(newData)
@@ -35,7 +43,7 @@ const ContactHistory = () => {
     }, [sendRequest])
 
     const onSearch = e => {
-        setDataSource(contactHistory.filter( entry =>  entry.name.includes(e.target.value) ))
+        setDataSource(contactHistory.filter( entry =>  entry.searchString.includes(e.target.value) ))
     }
 
     return (
@@ -56,7 +64,7 @@ const ContactHistory = () => {
                         <div className={ classes.TableContainer }>
                             <div className={classes.Header}>
                                 <h6>Contact History</h6>
-                                <Search placeholder="Search By Name" onSearch={ onSearch } className={ classes.Search }/>
+                                <Search placeholder="Search Contact History" onSearch={ onSearch } className={ classes.Search }/>
                             </div>
                             <CustomTable columns={ columns.CONTACT_HISTORY } data={ dataSource } />
                         </div>

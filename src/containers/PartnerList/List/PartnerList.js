@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Table } from 'antd'
 
-import NavigationBar from '../../components/Navigation/NavigationBar'
-import Search from '../../components/Shared/Search/Search'
-import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
+import NavigationBar from '../../../components/Navigation/NavigationBar'
+import Search from '../../../components/Shared/Search/Search'
+import LoadingSpinner from '../../../components/Shared/LoadingSpinner/LoadingSpinner'
 import classes from './PartnerList.module.css'
-import columns from '../../resources/TableColumns'
-import { itemRender } from '../../resources/Utilities'
-import { useHttpClient } from '../../resources/http-hook'
-import { showErrorModal } from '../../resources/Utilities'
+import columns from '../../../resources/TableColumns'
+import { convertToPhoneNumber1, itemRender } from '../../../resources/Utilities'
+import { useHttpClient } from '../../../resources/http-hook'
+import { showErrorModal } from '../../../resources/Utilities'
 import { Button } from 'react-bootstrap'
 
 const PartnerList = (props) => {
@@ -21,11 +21,21 @@ const PartnerList = (props) => {
             sendRequest('/retailer')
                 .then((response) => {
                     const newUsers = response.data.map((user) => {
-                        return {
-                            ...user,
-                            key: user._id,
+
+                        const transformedData = {
                             retailId: user._id,
+                            storeName: user.storeName,
+                            mobileNo: convertToPhoneNumber1(user.mobileNo),
+                            city: user.city,
+                            state: user.state,
                             date: new Date(user.createdAt).toLocaleDateString('en-IN')
+
+                        }
+
+                        return {
+                            ...transformedData,
+                            key: user._id,
+                            searchString: Object.values(transformedData).join(''),
                         }
                     })
                     setpartners(newUsers)
@@ -37,7 +47,13 @@ const PartnerList = (props) => {
     }, [sendRequest])
 
     const onSearch = e => {
-        setDataSource(partners.filter( entry =>  entry.storeName.includes(e.target.value) ))
+        setDataSource(partners.filter( entry =>  entry.searchString.includes(e.target.value) ))
+    }
+
+    const onRowClick = row => {
+        return {
+            onClick: () => props.history.push(`/admin2050/partners/${row.retailId}`, row.retailId),
+        }
     }
     
     return (
@@ -63,7 +79,7 @@ const PartnerList = (props) => {
                                 </div>
                                 <div className={ classes.InfoContainer2 }>
                                     <h6> Total Retailers :- &nbsp; <span style={{ fontSize: '20px' }}>{ partners.length }</span> </h6>
-                                    <Search placeholder="Search by Store Name" onSearch={ onSearch }/>
+                                    <Search placeholder="Search Retailer" onSearch={ onSearch }/>
                                 </div>
                             </div>
                             <div className={ classes.TableContainer }>
@@ -72,6 +88,7 @@ const PartnerList = (props) => {
                                     dataSource={ dataSource }
                                     pagination={{ defaultPageSize: 5, itemRender: itemRender, showSizeChanger: true, pageSizeOptions: [5,10,20] }} 
                                     bordered
+                                    onRow={ onRowClick }
                                     rowClassName={ classes.Row } />
                             </div>
                         </>   
