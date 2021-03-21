@@ -12,10 +12,6 @@ const ImageUpload = (props) => {
     useEffect(() => {
         if(!file)
             return
-        if(props.imageURL){
-            setPreviewUrl(apiContext.assetURL + props.imageURL)
-            return
-        }
         const fileReader = new FileReader()
         fileReader.onload = () => setPreviewUrl(fileReader.result)
         fileReader.readAsDataURL(file)    
@@ -50,7 +46,11 @@ const ImageUpload = (props) => {
                 </Button>
             </div>
             <div className={ classes.PreviewImage }>
-                { previewUrl ? <img src={ previewUrl } alt="" width="395px" height="295px"/> : null }
+                {
+                    props.imageURL
+                        ?   <img src={ apiContext.assetURL + props.imageURL } alt="" width="395px" height="295px"/>
+                        :   <img src={ previewUrl ? previewUrl : null } alt="" width="395px" height="295px"/>
+                }
             </div>
         </>
     )

@@ -51,22 +51,20 @@ class NewBusiness extends Component {
         
         this.setState({ isLoading: true })
 
-        const { brandName, year, noOfProducts, avgRevenue, city, country, about, file } = this.state.formData
+        // const { brandName, year, noOfProducts, avgRevenue, city, country, about, file } = this.state.formData
 
-        let formData = new FormData()
-        formData.append('brandName', brandName)
-        formData.append('year', year)
-        formData.append('noOfProduct', noOfProducts)
-        formData.append('avgRevenue', avgRevenue)
-        formData.append('city', city)
-        formData.append('country', country)
-        formData.append('about', about)
-        formData.append('file', file)
-                
-        axios.post(apiContext.baseURL + '/brand/create', formData, {
-            'Content-Type': 'false',
-            'Process-Data': 'false'
-        })
+        // let formData = new FormData()
+        // formData.append('brandName', brandName)
+        // formData.append('year', year)
+        // formData.append('noOfProduct', noOfProducts)
+        // formData.append('avgRevenue', avgRevenue)
+        // formData.append('city', city)
+        // formData.append('country', country)
+        // formData.append('about', about)
+        // formData.append('file', file)
+        
+        const id = this.props.location.state
+        axios.put(apiContext.baseURL + `/brand/update/${id}`, this.state.formData)
             .then((response) => {
                 console.log(response)
                 this.setState({ isLoading: false })
