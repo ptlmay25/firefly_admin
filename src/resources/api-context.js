@@ -10,7 +10,7 @@ const URL = [
 ]
 
 export const apiContext = {
-    ...URL[1],
+    ...URL[0],
     validPhoneNumbers: [
         '917600257008',
         '917874994529',

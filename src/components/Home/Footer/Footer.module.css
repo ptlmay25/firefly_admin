@@ -33,6 +33,15 @@
     justify-content: space-between;
 }
 
+.Link1 {
+    color: white !important
+}
+
+.Link1:hover {
+    color: white
+}
+
+
 .Link {
     color: white;
     margin-right: 30px;

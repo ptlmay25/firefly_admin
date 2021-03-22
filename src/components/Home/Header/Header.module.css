@@ -26,25 +26,18 @@
     background-color: black;
 }
 
-.Content {
-    display: flex;
-}
-
 .Data {
-    padding-top: 100px;
+    padding-top: 80px;
     padding-bottom: 100px;
-    padding-left: 40px;
-    max-width: 550px;
+    padding-left: 60px;
 }
 
 .Image {
-    margin-left: 300px;
-    width: 25%;
-    margin-top: -30px;
+    width: 75%;
 }
 
 .Para {
-    margin-top: 50px;
+    margin-top: 40px;
     font-size: 18px;
 }
 
@@ -67,25 +60,27 @@
     border-color: #2e2d31 !important;
 }
 
-@media screen and (max-width: 400px) {
-    .Data h2 {
-        font-size: 24px;
-    }
-
+@media screen and (max-width: 350px) {
     .Image {
-        margin-left: -5px;
-        width: 140px;
-        height: 300px;
-        margin-top: 220px;
+        width: 55%;
+        margin-top: -40px;
+        margin-left: 140px;
+    }
+}
+
+@media screen and (max-width: 400px) and (min-width: 350px) {
+    .Image {
+        width: 50%;
+        margin-top: -60px;
+        margin-left: 180px;
     }
 }
 
 @media screen and (min-width: 400px) and (max-width: 600px) {
     .Image {
-        margin-left: 20px;
-        width: 200px;
-        height: 400px;
-        margin-top: 160px;
+        width: 50%;
+        margin-top: -120px;
+        margin-left: 200px;
     }
 }
 
@@ -94,17 +89,12 @@
         padding: 20px;
     }
 
-
     .Data {
-        padding-bottom: 0px;
+        padding: 30px 30px;
     }
 
     .Heading {
         font-size: 24px;
-    }
-
-    .Info {
-        max-width: 220px;
     }
 
     .Para {
@@ -114,47 +104,37 @@
 
     .Button {
         width: 150px;
-        margin-top: 10px;
+        margin-top: 30px;
     }
 
     .Contact {
         margin-right: 0px;
-    }
-
-    .Data {
-        padding-top: 40px;
-        padding-left: 20px;
     }
 }
 
 @media screen and (min-width: 601px) and (max-width: 1000px) {
-    .Image {
-        display: none;
+    .Contact {
+        margin-right: 0px;
     }
 
     .Data {
+        padding-left: 40px;
         padding-top: 40px;
-        padding-left: 20px;
     }
 
-    .Contact {
-        margin-right: 0px;
+    .Image {
+        width: 120%;
+        margin-top: 80px;
     }
 }
 
 @media screen and (min-width: 1001px) and (max-width: 1350px) {
-    .Data {
-        padding-top: 40px;
-        padding-left: 20px;
-    }
-
     .Contact {
         margin-right: 0px;
     }
 
     .Image {
-        margin-left: 100px;
-        width: 32%;
-        margin-top: 0px;
+        width: 120%;
+        margin-top: 80px;
     }
 }
