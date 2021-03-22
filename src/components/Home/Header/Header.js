@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, Col, Row } from 'react-bootstrap'
 
 import classes from './Header.module.css'
 
@@ -14,7 +14,7 @@ const Header = () => {
                 <p className={ classes.Contact } onClick={() => window.location = '#footer'} >Contact Us</p>
             </div>
 
-            <div className={ classes.Content }>
+            {/* <div className={ classes.Content }>
                 <div className={ classes.Data }>               
                     <h2 style={{ color: 'white' }} className={ classes.Heading }>Start your wholesale business from home & earn up to ₹30,000 a month</h2>
                     <div className={ classes.Info }>
@@ -28,7 +28,28 @@ const Header = () => {
                     </div>
                 </div>
                 <img src={ phone } alt="Phone" className={ classes.Image } />
-            </div>
+            </div> */}
+
+            <Row>
+                <Col sm={ 8 } md={ 6 }  className={ classes.Data }>
+                    <h2 style={{ color: 'white' }} className={ classes.Heading }>Start your wholesale business from home & earn up to ₹30,000 a month</h2>
+                    <div className={ classes.Info }>
+                        <p className={ classes.Para }>Saler’s club is democratizing wholesale business  for everyone</p>
+                        <Button variant="dark" className={ classes.Button }><img src={ playStore } alt="Play Store" /> 
+                            {' '}
+                            <a href="https://play.google.com/store/apps/details?id=com.firefly.ibiz" rel="noreferrer" target="_blank" className={ classes.Link }>
+                                Get the App
+                            </a>
+                        </Button>
+                    </div>
+                </Col>
+
+                <Col sm={ 1 } md={ 1 }></Col>
+
+                <Col sm={ 3 } md={ 4 }>
+                    <img src={ phone } alt="Phone" className={ classes.Image } />
+                </Col>
+            </Row>
         </div>
     )
 }

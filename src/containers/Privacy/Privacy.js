@@ -18,7 +18,7 @@ const Privacy = () => {
             </div>  
 
             <div className={ classes.Privacy }>
-                <h4 style={{ marginBottom: '30px' }}>Refund Policy</h4>
+                <h4 style={{ marginBottom: '30px' }}>Privacy Policy</h4>
                 <p>[MOBILE APP]</p>
                 <p>Last updated [8/24/2020]</p>
                 <p>[Saler’s club] (“we” or “us” or “our”) respects the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our mobile application (the “Application”). Please read this Privacy Policy carefully. IF YOU DO NOT AGREE WITH THE TERMS OF THIS PRIVACY POLICY, PLEASE DO NOT ACCESS THE APPLICATION.</p>

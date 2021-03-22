@@ -49,13 +49,14 @@ class SellingHistory extends Component {
                     num_of_tokens: data.num_of_tokens,
                     total_price: data.total_price,
                     date: new Date(data.date).toLocaleDateString('en-IN'),
+                    mobile: await this.getPhoneNumber(data.user_id),
                 }
 
                 return {
                     ...transformedData,
                     key: data._id,
                     searchString: Object.values(transformedData).join(''),
-                    mobileNo: convertToPhoneNumber(await this.getPhoneNumber(data.user_id)),    
+                    mobileNo: convertToPhoneNumber(transformedData.mobile),    
                     token_price: `₹ ${ convertToINR(data.token_price) }`,
                     total_price: `₹ ${ convertToINR(data.num_of_tokens * data.token_price) }`,
                 }
