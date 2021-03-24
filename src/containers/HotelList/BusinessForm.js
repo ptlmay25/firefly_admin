@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Button } from 'react-bootstrap'
 
-import ImageUpload from './ImageUpload'
+import ImageUpload from '../../components/Shared/ImageUpload/ImageUpload'
 import CustomInput from '../../components/HotelList/CustomInput/CustomInput'
 
 import classes from './BusinessForm.module.css'
+import ImageUpdate from '../../components/Shared/ImageUpdate/ImageUpdate'
 
 class BusinessForm extends Component {
 
@@ -77,13 +78,33 @@ class BusinessForm extends Component {
                     </Col>
                     <Col md={2}></Col>
                     <Col md={4} className={ classes.ImageContainer }>
-                        <ImageUpload onChange={ this.props.onImageChange } disableUpload={ this.props.disableUpload } imageURL={ brandImg } />
+                        {
+                            ! this.props.updateMode
+                                ?   <ImageUpload 
+                                        onChange={ this.props.onImageChange }
+                                        title="Business Image"  />
+                                :   <ImageUpdate 
+                                        onChange={ this.props.onImageChange }
+                                        uploadImage={ this.props.uploadImage }
+                                        imageSaved={ this.props.imageSaved }
+                                        imageURL={ brandImg }
+                                        title="Business Image" />
+                        }
                     </Col>
                 </Row>
                 <div className={ classes.ButtonContainer }>
                     <Button id="save" style={{ width: '150px' }} type="submit">Save</Button>
                     <Button variant="danger" style={{ width: '150px' }} onClick={ (e) => this.props.onCancel(e) }>Cancel</Button>
                 </div>
+                {
+                    this.props.updateMode 
+                        ? <p 
+                            style={{ color:' red', fontSize: '20px', marginTop: '-70px', textAlign: 'right', textDecoration: 'underline', cursor: 'pointer' }}
+                            onClick={ (e) => this.props.onClickDelete(e) }>
+                                Delete Brand
+                            </p> 
+                        : null
+                }
             </Form>
         )
     }

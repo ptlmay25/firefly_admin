@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from 'react-bootstrap'
-import { apiContext } from '../../resources/api-context'
-
-import classes from './BusinessForm.module.css'
+import classes from './ImageUpload.module.css'
 
 const ImageUpload = (props) => {
     const [ file, setFile ] = useState()
@@ -15,7 +13,7 @@ const ImageUpload = (props) => {
         const fileReader = new FileReader()
         fileReader.onload = () => setPreviewUrl(fileReader.result)
         fileReader.readAsDataURL(file)    
-    }, [file, props.imageURL])
+    }, [file])
 
     const pickedHandler = event => {
         let pickedFile
@@ -32,8 +30,8 @@ const ImageUpload = (props) => {
     
     return (
         <>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <h5>Business Image</h5>
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '400px' }}>
+                <h5>{ props.title }</h5>
                 <input 
                     ref={ filePickerRef } 
                     type="file" 
@@ -41,16 +39,14 @@ const ImageUpload = (props) => {
                     accept="image/*" 
                     style={{ display: 'none' }} />
                 
-                <Button style={{ width: '150px', marginTop: '-10px' }} onClick={ () => pickImageHandler() } disabled={ props.disableUpload }>
-                    Upload
+                <Button 
+                    style={{ width: '150px', marginTop: '-10px' }} 
+                    onClick={ () => pickImageHandler() } >
+                        Select Image
                 </Button>
             </div>
             <div className={ classes.PreviewImage }>
-                {
-                    props.imageURL
-                        ?   <img src={ apiContext.assetURL + props.imageURL } alt="" width="395px" height="295px"/>
-                        :   <img src={ previewUrl ? previewUrl : null } alt="" width="395px" height="295px"/>
-                }
+                <img src={ previewUrl ? previewUrl : null } alt="" width="395px" height="295px"/>
             </div>
         </>
     )
