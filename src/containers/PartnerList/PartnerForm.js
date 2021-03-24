@@ -5,6 +5,8 @@ import { Input, Select } from 'antd'
 import PhoneInput from 'react-phone-input-2'
 
 import classes from './PartnerForm.module.css'  
+import ImageUpload from '../../components/Shared/ImageUpload/ImageUpload'
+import ImageUpdate from '../../components/Shared/ImageUpdate/ImageUpdate'
 
 const states = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Andaman and Nicobar Islands', 'Assam', 'Bihar', 'Chandigarh','Chhattisgarh',	
@@ -17,8 +19,8 @@ const states = [
 class PartnerForm extends Component {
     
     render() {
-        const { name, email, mobileNo, aadharCardNo, panCardNo, city, state, zipcode } = this.props.data
-        const { storeName, storeAddress, storeCategory, gstNumber, storeZipCode, totalArea } = this.props.data
+        const { name, email, mobileNo, aadharCardNo, panCardNo, city, state, zipcode, storeImg } = this.props.data
+        const { storeName, storeAddress, storeCategory, gstNumber, storeZipCode, totalArea, numberOfStores } = this.props.data
 
         return (
             <Form onSubmit={(e) => this.props.onSubmit(e)}>
@@ -102,7 +104,7 @@ class PartnerForm extends Component {
                                 </div>
                             </Row>
 
-                            <Row style={{ marginTop: '20px' }}>
+                            <Row style={{ marginTop: '20px', marginBottom: '50px' }}>
                                 <span>Zip Code *</span>
                                 <Input
                                     type="number"
@@ -111,6 +113,34 @@ class PartnerForm extends Component {
                                     required
                                     onChange={(event) => this.props.onChange(event.target.value, 'zipcode')} />
                             </Row>
+    
+                            {
+                            ! this.props.updateMode
+                                ?   <ImageUpload 
+                                        onChange={ this.props.onImageChange }
+                                        title="Store Image"  />
+                                :   <ImageUpdate
+                                        onChange={ this.props.onImageChange }
+                                        uploadImage={ this.props.uploadImage }
+                                        imageSaved={ this.props.imageSaved }
+                                        imageURL={ storeImg }
+                                        title="Store Image" />
+                        }
+                        
+                            <div className={ classes.ButtonContainer }>
+                                <Button id="save" style={{ width: '150px' }} type="submit">Save</Button>
+                                <Button variant="danger" style={{ width: '150px' }} onClick={(e) => this.props.onCancel(e)}>Cancel</Button>
+                            </div>
+
+                            {
+                                this.props.updateMode 
+                                    ? <p 
+                                        style={{ color:' red', fontSize: '20px', marginTop: '20px', textAlign: 'left', textDecoration: 'underline', cursor: 'pointer' }}
+                                        onClick={ (e) => this.props.onClickDelete(e) }>
+                                            Delete Retailer
+                                        </p> 
+                                    : null
+                            }
                         </div>
                     </Col>
                     <Col md={2}></Col>
@@ -154,6 +184,16 @@ class PartnerForm extends Component {
                             </Row>
 
                             <Row style={{ marginTop: '30px' }}>
+                                <span>Number of Stores *</span>
+                                <Input
+                                    type="number"
+                                    value = { numberOfStores } 
+                                    placeholder="Enter Number of stores"
+                                    required
+                                    onChange={(event) => this.props.onChange(event.target.value, 'numberOfStores')} />
+                            </Row>
+
+                            <Row style={{ marginTop: '30px', marginBottom: '100px'}}>
                                 <div className={ classes.CityDiv }>
                                     <span>ZipCode *</span>
                                     <Input 
@@ -174,11 +214,6 @@ class PartnerForm extends Component {
                                         onChange={(event) => this.props.onChange(event.target.value, 'totalArea')} />
                                 </div>
                             </Row>
-                        </div>
-
-                        <div className={ classes.ButtonContainer }>
-                            <Button id="save" style={{ width: '150px' }} type="submit">Save</Button>
-                            <Button variant="danger" style={{ width: '150px' }} onClick={() => this.props.onCancel()}>Cancel</Button>
                         </div>
                     </Col>
                 </Row>

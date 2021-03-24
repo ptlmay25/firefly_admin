@@ -1,0 +1,19 @@
+.PreviewImage {
+    margin-top: 10px;
+    align-content: center;
+    border: 1px solid black;
+    height: 300px;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
+    background-color: #d6d6d6
+}
+
+
+.UploadContainer {
+    width: 400px;
+    display: flex;
+    justify-content: flex-end;
+}

@@ -9,6 +9,8 @@ import classes from './NewBusiness.module.css'
 import { apiContext } from '../../../resources/api-context'
 import LoadingSpinner from '../../../components/Shared/LoadingSpinner/LoadingSpinner'
 import BusinessForm from '../BusinessForm'
+import storage from '../../../resources/firebase-storage-context'
+import Back from '../../../components/Shared/Back/Back'
 
 class NewBusiness extends Component {
     
@@ -21,43 +23,55 @@ class NewBusiness extends Component {
             city: '',
             country: '',
             about: '',
-            file: '',
+            brandImg: '',
         },
+        file: '',
         isLoading: false
     }
 
-    onChangeImage = (image) => {
-        this.setState({ formData: update(this.state.formData, { file: { $set: image }}) })
+    uploadImage = async (brandID) => {
+        const image = this.state.file
+        const uploadTask = await storage.ref(`brand/${brandID}`).put(image);
+        return uploadTask.ref.getDownloadURL()
+    }
+
+    addImageURLToData = (brandID, imageURL) => {
+        const stateCopy = this.state.formData
+        stateCopy.brandImg = imageURL
+
+        axios.put(apiContext.baseURL + `/brand/update/${brandID}`, stateCopy)
+            .then((res) => console.log('Res', res))
+            .catch((err) => showErrorModal(err.message))
     }
 
     onSubmitHandler = (event) => {
-        event.preventDefault()
-        
+        event.preventDefault()        
         this.setState({ isLoading: true })
-
-        const { brandName, year, noOfProduct, avgRevenue, city, country, about, file } = this.state.formData
-
-        let formData = new FormData()
-        formData.append('brandName', brandName)
-        formData.append('year', year)
-        formData.append('noOfProduct', noOfProduct)
-        formData.append('avgRevenue', avgRevenue)
-        formData.append('city', city)
-        formData.append('country', country)
-        formData.append('about', about)
-        formData.append('file', file)
                 
-        axios.post(apiContext.baseURL + '/brand/create', formData, {
-            'Content-Type': 'false',
-            'Process-Data': 'false'
-        })
+        axios.post(apiContext.baseURL + '/brand/create', this.state.formData)
             .then((response) => {
-                console.log(response)
-                this.setState({ isLoading: false })
-                this.props.history.push('/admin2050/business')
+                if(this.state.file) {
+                    this.uploadImage(response.data.savedDoc._id)
+                        .then((imageURL) => {
+                            this.addImageURLToData(response.data.savedDoc._id, imageURL)
+                            window.setTimeout(() => {                                
+                                this.setState({ isLoading: false })
+                                this.props.history.push('/admin2050/business')
+                            }, 100)
+                        })
+                }
+                else {
+                    this.setState({ isLoading: false })
+                    this.props.history.push('/admin2050/business')
+                }
             })
             .catch((error) => showErrorModal(error.message))
     } 
+
+    
+    onChangeImage = (image) => {
+        this.setState({ file: image })
+    }
 
     onChangeHandler = (event, field) => {
         this.setState({ formData: update(this.state.formData, { [field]: { $set: event.target.value }}) })
@@ -75,14 +89,17 @@ class NewBusiness extends Component {
                 {
                     this.state.isLoading 
                         ?   <LoadingSpinner />
-                        :   <Container className={ classes.FormContainer }>
-                                <BusinessForm 
-                                    data={ this.state.formData } 
-                                    onChange={ this.onChangeHandler } 
-                                    onSubmit={ this.onSubmitHandler }
-                                    onImageChange = { this.onChangeImage }
-                                    onCancel={ this.onCancel } />
-                            </Container>
+                        :   <>
+                                <Back link="/admin2050/business" text="Back" />
+                                <Container className={ classes.FormContainer }>
+                                    <BusinessForm 
+                                        data={ this.state.formData }
+                                        onChange={ this.onChangeHandler } 
+                                        onSubmit={ this.onSubmitHandler }
+                                        onImageChange = { this.onChangeImage }
+                                        onCancel={ this.onCancel } />
+                                </Container>
+                            </>
                 }
                 
             </>

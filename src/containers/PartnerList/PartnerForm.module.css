@@ -4,7 +4,6 @@
 
 .ButtonContainer {
     margin-top: 60px;
-    text-align: right;
 }
 
 :global .react-tel-input .form-control{

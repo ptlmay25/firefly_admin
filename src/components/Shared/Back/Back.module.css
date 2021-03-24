@@ -1,0 +1,14 @@
+.LinkContainer {
+    padding-top: 40px;
+    padding-left: 100px;
+}
+
+.Link {
+    color: black;
+    font-size: 16px;
+}
+
+.Link:hover {
+    color: black;
+    text-decoration: underline;
+}

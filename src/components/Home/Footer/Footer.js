@@ -13,11 +13,11 @@ const Footer = (props) => {
                     <Col md={6} lg={4} className={ classes.Details }>
                         <h3 style={{ color: 'white' }}>Start Your Wholesale Business with Saler’s club</h3>
                         <p>Become your own boss and earn up to  ₹ 30,000 or more every month</p>
-                        <Button className= { classes.Button } variant="success">
-                            {' '}
-                            <a href="https://play.google.com/store/apps/details?id=com.firefly.ibiz" rel="noreferrer" target="_blank" className={ classes.Link1 }>
+                        <Button 
+                            className= { classes.Button } 
+                            variant="success" 
+                            onClick={ () => window.open('https://play.google.com/store/apps/details?id=com.firefly.ibiz', '_blank') }>
                                 Get App
-                            </a>
                         </Button>
                     </Col>
 
