@@ -6,7 +6,7 @@ import classes from './Back.module.css'
 
 const Back = (props) => {
     return (
-        <div className={ classes.LinkContainer }>
+        <div className={ classes.LinkContainer } style={{ paddingLeft: props.padding || '100px' }}>
             <ArrowLeftOutlined style={{ fontSize: '12px', marginRight: '5px', verticalAlign: 'middle' }}/> 
             <Link to={ props.link } className={ classes.Link } >
                 { props.text }
