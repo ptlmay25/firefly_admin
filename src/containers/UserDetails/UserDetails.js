@@ -12,7 +12,10 @@ import { convertToINR, convertToPhoneNumber, showErrorModal } from '../../resour
 import axios from 'axios'
 import { apiContext } from '../../resources/api-context'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner/LoadingSpinner'
+import Back from '../../components/Shared/Back/Back'
 
+
+const defaultImage = 'https://firebasestorage.googleapis.com/v0/b/salersclub.appspot.com/o/user%2Fdefault.png?alt=media&token=8b84a88d-52b6-4738-bd23-856cb5e42f56'
 
 class UserDetails extends Component {
 
@@ -84,7 +87,7 @@ class UserDetails extends Component {
                     bankAccountNo: element.bankAccountNo,
                     IFSC: element.IFSC,
                     UPI: element.UPI,
-                    status: element.status,
+                    status: element.Status === true ? 'Fulfilled': 'Pending',
                     amount: element.total_amount,
                     total_amount: element.total_amount
                 }
@@ -176,6 +179,7 @@ class UserDetails extends Component {
                     this.state.isLoading
                         ?   <LoadingSpinner />
                         :   <>
+                                <Back link="/admin2050/users" text="Back" padding="50px" />
                                 <div className={ classes.BoxContainer }>
                                     <Box title="FireFly Account Balance" amount={ `₹ ${ convertToINR(accountData.accountBalance) }` } />
                                     <Box title="Total Withdraw" amount={ ` ₹ ${ convertToINR(accountData.withdrawAmount) }` } />
@@ -199,7 +203,7 @@ class UserDetails extends Component {
                                             </Table>
                                         </div>
                                         <div className={ classes.Photo }>
-                                            <img src={ data.userImg ? apiContext.assetURL + data.userImg : Avatar } alt="" width="175px" height="175px" />                
+                                            <img src={ data.userImg && data.userImg !== defaultImage ? data.userImg : Avatar } alt="" width="175px" height="175px" />                
                                         </div>
                                     </div>
                                 </div>

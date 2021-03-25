@@ -53,7 +53,7 @@ const columns = {
         {   title:  'Date', dataIndex: 'createdAt', align    },
         {   title:  'User ID', dataIndex: 'userId', align     },
         {   title:  'Withdraw ID', dataIndex: 'withdraw_id', align    },
-        {   title:  'Account Holder Name', dataIndex: 'acc_holder_name', align    },
+        {   title:  'Account Holder Name', dataIndex: 'name', align    },
         {   title:  'Bank Account Number', dataIndex: 'BankAccountNumber', align    },
         {   title:  'User Account Balance', dataIndex: 'acc_bal', align    },
         {   title:  'IFSC Code', dataIndex: 'IFSC', align    },
@@ -90,7 +90,7 @@ const columns = {
         {   title:  'UPI', dataIndex: 'UPI', align    },
         {   title:  'IFSC Code', dataIndex: 'IFSC', align    },
         {   title:  'Total Amount', dataIndex: 'total_amount', align    },
-        {   title:  'Status', dataIndex: 'Status', align    },
+        {   title:  'Status', dataIndex: 'status', align    },
     ],
     USER_PURCHASE_HISTORY: [
         {   title:  'Date', dataIndex: 'date', align    },
