@@ -33,7 +33,7 @@ export class TokenPrice extends Component {
         dataSource: null,
         isLoading: true,
         tokenHistory: {
-            month_year: moment(),
+            token_date: moment(),
             upload_date: moment(),
             price_per_token: 0,
             total_revenue: 0,
@@ -68,7 +68,7 @@ export class TokenPrice extends Component {
             const tokenHistoryData = await (await axios.get(apiContext.baseURL + '/token')).data.data
         
             return tokenHistoryData.map((element) => {
-                const date = new Date(element.upload_date)
+                const date = new Date(element.token_date)
 
                 const transformedData = {
                     total_revenue: element.total_revenue,
@@ -169,8 +169,12 @@ export class TokenPrice extends Component {
           confirmResult
             .confirm(verificationCode)
             .then(user => {
-                this.setState({ otpSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false });    
-                axios.post(apiContext.baseURL + '/token/create', { data: { ...this.state.tokenHistory }})
+                this.setState({ otpSent: false, userDetails: user, phone : "", verificationCode: "", inProgress : false }); 
+
+                const tokenHistoryCopy = this.state.tokenHistory
+                tokenHistoryCopy.token_date = `${tokenHistoryCopy.token_date.substring(0,2)}/01/${tokenHistoryCopy.token_date.substring(3,)}`   
+                
+                axios.post(apiContext.baseURL + '/token/create', { data: { ...tokenHistoryCopy }})
                     .then((response) => {
                         this.onClearHandler()
                         this.setState({ 
@@ -209,7 +213,7 @@ export class TokenPrice extends Component {
 
     onClearHandler = async () => {
         const tokenHistoryCopy = {
-            month_year: moment(),
+            token_date: moment(),
             upload_date: moment(),
             price_per_token: await this.getTokenPrice(),
             total_revenue: 0,
@@ -277,7 +281,7 @@ export class TokenPrice extends Component {
 
     render() {
         const { otpSent, allowUpdate, verificationCode, dataSource, inProgress, phone, tokenHistory } = this.state
-        const { price_per_token, month_year, upload_date, total_revenue, operating_expenses, interest_and_taxes, split_50_50, net_profit, total_number_of_tokens, dividend_per_token, new_token_price } = tokenHistory
+        const { price_per_token, token_date, upload_date, total_revenue, operating_expenses, interest_and_taxes, split_50_50, net_profit, total_number_of_tokens, dividend_per_token, new_token_price } = tokenHistory
         const date = new Date().toLocaleDateString('EN-IN')
         return (
             <>
@@ -306,13 +310,13 @@ export class TokenPrice extends Component {
                                                     <InputDiv 
                                                         label="Month + Year" 
                                                         type="month" 
-                                                        value={ month_year } 
-                                                        onChange={(data, dateString) => this.onChangeDateHandler(data, dateString, 'month_year')}
+                                                        value={ token_date } 
+                                                        onChange={(data, dateString) => this.onChangeDateHandler(data, dateString, 'token_date')}
                                                         required
                                                         disabled={ allowUpdate }/>
                                                     
                                                     <InputDiv 
-                                                        label="Date" 
+                                                        label="Upload Date" 
                                                         type="date" 
                                                         value={ upload_date } 
                                                         onChange={(data, dateString) => this.onChangeDateHandler(data, dateString, 'upload_date')} 
@@ -382,8 +386,12 @@ export class TokenPrice extends Component {
                                                     </div>
                                                     <div style={{ padding: '20px 70px' }} className={ classes.ButtonDiv }>
                                                         <Button variant="primary" style={{ width: '150px' }} type="submit">Calculate</Button>
-                                                        <Button variant="secondary" style={{ width: '150px' }} disabled={ !allowUpdate } onClick={() => this.setState({ isModalOpen: true })}>
-                                                            Update
+                                                        <Button 
+                                                            variant="secondary" 
+                                                            style={{ width: '150px' }} 
+                                                            disabled={ !allowUpdate } 
+                                                            onClick={() => this.setState({ isModalOpen: true })}>
+                                                                Update
                                                         </Button>
                                                     </div>
                                                 </Col>
