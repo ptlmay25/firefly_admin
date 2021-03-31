@@ -14,6 +14,7 @@ if(token) {
 
 const onAuthEnd = (state, action) => {
     sessionStorage.removeItem('token')
+    sessionStorage.setItem('onLogout', true)
     return updateObject(state, { isLoggedIn: false })
 }
 

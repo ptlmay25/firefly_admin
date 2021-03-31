@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Modal } from 'antd'
 
@@ -10,9 +10,16 @@ import Header from '../../components/Home/Header/Header';
 import Stats from '../../components/Home/Stats/Stats';
 import ModalContent from './ModalContent/ModalContent';
 
-const Home = () => {
+const Home = (props) => {
 
     const [ isModalOpen , setIsModalOpen ] = useState(false)
+
+    useEffect(() => {
+        if(sessionStorage.getItem('onLogout')) {
+            sessionStorage.setItem('onLogout', null)
+            props.history.push('/admin2050')
+        }      
+    }, [props.history])
 
     return (
         <div>

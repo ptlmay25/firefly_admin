@@ -35,7 +35,7 @@ class SellingHistory extends Component {
             let totalTokenValue = 0
  
             const { data: { data: sellingData } } = await axios.get(apiContext.baseURL + '/sell')
-            this.setState({ isLoading: false })
+            
 
             const newData = await sellingData.map(async (data) => {
                 tempTokenCount += data.num_of_tokens
@@ -66,9 +66,10 @@ class SellingHistory extends Component {
 
             this.setState({
                 tokenCount: tempTokenCount,
-                tokenValue: totalTokenValue,
+                tokenValue: `₹ ${ convertToINR(totalTokenValue) }`,
                 sellingData: newData1,
-                dataSource: newData1
+                dataSource: newData1,
+                isLoading: false
             })
         } catch(error) {
             showErrorModal(error.message)
