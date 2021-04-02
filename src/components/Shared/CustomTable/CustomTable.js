@@ -11,6 +11,7 @@ const CustomTable = (props) => {
               columns={ props.columns }
               dataSource={ props.data }
               pagination={{ defaultPageSize: 5, itemRender: itemRender, showSizeChanger: true, pageSizeOptions: [5,10,20] }} 
+              scroll={ props.scroll }
               bordered
               rowClassName={ classes.Row } />
        </div>

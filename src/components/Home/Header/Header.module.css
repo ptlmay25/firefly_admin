@@ -66,6 +66,10 @@
         margin-top: -40px;
         margin-left: 140px;
     }
+
+    .Button {
+        width: 170px;
+    }
 }
 
 @media screen and (max-width: 400px) and (min-width: 350px) {
