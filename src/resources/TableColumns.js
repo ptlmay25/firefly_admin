@@ -8,6 +8,8 @@ const columns = {
         {   title:  'User Contact Number', dataIndex: 'mobileNo', align    }, 
         {   title:  'Number of Tokens', dataIndex: 'num_of_tokens', align    },
         {   title:  'Token Price', dataIndex: 'token_price', align    },
+        {   title:  'Payment Mode', dataIndex: 'payment_mode', align    },
+        {   title:  'Payment Reference ID', dataIndex: 'payment_token', align    },
         {   title:  'Total', dataIndex: 'total_price', align    },
         {   title:  'Status', dataIndex: 'status', align    },
     ],

@@ -47,6 +47,8 @@ class PurchaseHistory extends Component {
                     token_price: data.token_price,
                     num_of_tokens: data.num_of_tokens,
                     total_price: data.total_price,
+                    payment_mode: data.payment_mode || 'RazorPay',
+                    payment_token: data.payment_token,
                     date: new Date(data.date).toLocaleDateString('en-IN'),
                     mobile: await this.getPhoneNumber(data.user_id),
                 }
@@ -102,7 +104,7 @@ class PurchaseHistory extends Component {
                                     <h6>Token Purchase History</h6>
                                     <Search placeholder="Search Purchase History" onSearch={ this.onSearch } className={ classes.Search }/>
                                 </div>
-                                <CustomTable columns={ columns.PURCHASE_HISTORY } data={ this.state.dataSource } />
+                                <CustomTable columns={ columns.PURCHASE_HISTORY } data={ this.state.dataSource } scroll={{ x: 1800 }} />
                             </div>
                         </>     
                     :   null
