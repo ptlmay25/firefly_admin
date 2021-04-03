@@ -67,6 +67,7 @@ class Dashboard extends Component {
                             <NavLink to="./selling-history" className={ classes.Link }>Sell History</NavLink>
                             <NavLink to="./withdraw-history" className={ classes.Link }>Withdraw History</NavLink>
                             <NavLink to="./purchase-tokens" className={ classes.Link }>Manual Token Purchase</NavLink>
+                            <NavLink to="./sell-tokens" className={ classes.Link }>Manual Token Sell</NavLink>
                             <NavLink to="./contact-history" className={ classes.Link }>Contact History</NavLink>
                             <NavLink to="./contact-request" className={ classes.Link }>Contact Requests</NavLink>
                             <NavLink to="/logout" className={ classes.Link } onClick={() => this.props.onAuthEnd()}>Log out</NavLink>
