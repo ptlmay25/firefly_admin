@@ -35,7 +35,7 @@ class PurchaseHistory extends Component {
             let totalTokenValue = 0
  
             const { data: { data: purchaseData } } = await axios.get(apiContext.baseURL + '/purchase')
-
+                        
             const newData = await purchaseData.map(async (data) => {
                 tempTokenCount += data.num_of_tokens
                 totalTokenValue += data.num_of_tokens * data.token_price
