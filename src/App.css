@@ -10,9 +10,9 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 5px;
-  height: 4px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f1f1; 
@@ -24,5 +24,5 @@ input[type=number] {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
-}
+} */
 

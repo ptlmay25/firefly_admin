@@ -21,7 +21,7 @@ class TokenPurchase extends Component {
         FormData: {
             mobileNo: '',
             name: '',
-            token_price: '',
+            token_price: 0,
             numberOfTokens: '',
             paymentMethod: '',
             referenceNo: '',
@@ -63,9 +63,10 @@ class TokenPurchase extends Component {
         event.preventDefault()
 
         const { userData, FormData } = this.state
+        
         const formData = {
             user_id: userData._id,
-            num_of_tokens: FormData.numberOfTokens,
+            num_of_tokens: parseInt(FormData.numberOfTokens),
             payment_mode: FormData.paymentMethod,
             payment_token: FormData.referenceNo
         }
@@ -164,7 +165,6 @@ class TokenPurchase extends Component {
                                             <Row className={ classes.Form }>
                                                 <span>UPI / Cheque No / NEFT transaction No *</span>
                                                 <Input
-                                                    type="number"
                                                     value = { referenceNo } 
                                                     placeholder="Enter your UTR or Cheque No"
                                                     required
