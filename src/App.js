@@ -18,6 +18,7 @@ const PartnerList = React.lazy(() => import('./containers/PartnerList/List/Partn
 const UserDetails = React.lazy(() => import('./containers/UserDetails/UserDetails'))
 const TokenPrice = React.lazy(() => import('./containers/TokenPrice/TokenPrice'))
 const TokenPurchase = React.lazy(() => import('./containers/TokenPurchase/TokenPurchase'))
+const TokenSell = React.lazy(() => import('./containers/TokenSell/TokenSell'))
 const BusinessList = React.lazy(() => import('./containers/HotelList/BusinessList/BusinessList'))
 const NewBusiness = React.lazy(() => import('./containers/HotelList/NewBusiness/NewBusiness'))
 const UpdateBusiness = React.lazy(() => import('./containers/HotelList/UpdateBusiness/UpdateBusiness'))
@@ -56,6 +57,7 @@ class App extends Component {
           <Route path="/admin2050/withdraw-history" component={ WithdrawHistory } />
           <Route path="/admin2050/token-price" component={ TokenPrice } />
           <Route path="/admin2050/purchase-tokens" component={ TokenPurchase } />
+          <Route path="/admin2050/sell-tokens" component={ TokenSell } />
           <Route path="/admin2050/withdraw-request" component={ WithdrawRequest } />
           <Route path="/admin2050/contact-request" component={ ContactRequest } />
           <Route path="/admin2050/contact-history" component={ ContactHistory } />
